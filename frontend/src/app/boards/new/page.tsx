@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/auth/clerk";
 
 import { ApiError } from "@/api/mutator";
-import { use创建BoardApiV1BoardsPost } from "@/api/generated/boards/boards";
+import { useCreateBoardApiV1BoardsPost } from "@/api/generated/boards/boards";
 import {
   type listBoardGroupsApiV1BoardGroupsGetResponse,
   useListBoardGroupsApiV1BoardGroupsGet,
@@ -40,7 +40,7 @@ export default function NewBoardPage() {
   const { isAdmin } = useOrganizationMembership(isSignedIn);
 
   const [name, setName] = useState("");
-  const [description, set描述] = useState("");
+  const [description, setDescription] = useState("");
   const [gatewayId, setGatewayId] = useState<string>("");
   const [boardGroupId, setBoardGroupId] = useState<string>("none");
 
@@ -68,7 +68,7 @@ export default function NewBoardPage() {
     },
   });
 
-  const createBoardMutation = use创建BoardApiV1BoardsPost<ApiError>({
+  const createBoardMutation = useCreateBoardApiV1BoardsPost<ApiError>({
     mutation: {
       onSuccess: (result) => {
         if (result.status === 200) {
@@ -121,15 +121,15 @@ export default function NewBoardPage() {
     const trimmedName = name.trim();
     const resolvedGatewayId = displayGatewayId;
     if (!trimmedName) {
-      setError("看板名称 is required.");
+      setError("Board name is required.");
       return;
     }
     if (!resolvedGatewayId) {
       setError("Select a gateway before creating a board.");
       return;
     }
-    const trimmed描述 = description.trim();
-    if (!trimmed描述) {
+    const trimmedDescription = description.trim();
+    if (!trimmedDescription) {
       setError("Board description is required.");
       return;
     }
@@ -140,7 +140,7 @@ export default function NewBoardPage() {
       data: {
         name: trimmedName,
         slug: slugify(trimmedName),
-        description: trimmed描述,
+        description: trimmedDescription,
         gateway_id: resolvedGatewayId,
         board_group_id: boardGroupId === "none" ? null : boardGroupId,
       },
@@ -150,11 +150,11 @@ export default function NewBoardPage() {
   return (
     <DashboardPageLayout
       signedOut={{
-        message: "登录后方可创建看板。",
+        message: "Sign in to create a board.",
         forceRedirectUrl: "/boards/new",
         signUpForceRedirectUrl: "/boards/new",
       }}
-      title="创建看板"
+      title="Create board"
       description="Boards organize tasks and agents by mission context."
       isAdmin={isAdmin}
       adminOnlyMessage="Only organization owners and admins can create boards."
@@ -214,7 +214,7 @@ export default function NewBoardPage() {
                 disabled={isLoading}
               />
               <p className="text-xs text-slate-500">
-                可选. Groups increase cross-board visibility.
+                Optional. Groups increase cross-board visibility.
               </p>
             </div>
           </div>
@@ -225,7 +225,7 @@ export default function NewBoardPage() {
             </label>
             <Textarea
               value={description}
-              onChange={(event) => set描述(event.target.value)}
+              onChange={(event) => setDescription(event.target.value)}
               placeholder="What context should the lead agent know before onboarding?"
               className="min-h-[120px]"
               disabled={isLoading}
@@ -236,7 +236,7 @@ export default function NewBoardPage() {
         {gateways.length === 0 ? (
           <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
             <p>
-              No gateways available. 创建 one in{" "}
+              No gateways available. Create one in{" "}
               <Link
                 href="/gateways"
                 className="font-medium text-blue-600 hover:text-blue-700"
@@ -262,7 +262,7 @@ export default function NewBoardPage() {
             取消
           </Button>
           <Button type="submit" disabled={isLoading || !isFormReady}>
-            {isLoading ? "创建中…" : "创建看板"}
+            {isLoading ? "创建中…" : "Create board"}
           </Button>
         </div>
       </form>

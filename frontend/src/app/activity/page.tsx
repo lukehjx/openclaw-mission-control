@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 import { SignedIn, SignedOut, useAuth } from "@/auth/clerk";
-import { 活动记录 as 活动记录Icon } from "lucide-react";
+import { Activity as ActivityIcon } from "lucide-react";
 
 import { ApiError } from "@/api/mutator";
 import { streamAgentsApiV1AgentsStreamGet } from "@/api/generated/agents/agents";
-import { list活动记录ApiV1活动记录Get } from "@/api/generated/activity/activity";
+import { listActivityApiV1ActivityGet } from "@/api/generated/activity/activity";
 import {
   getBoardSnapshotApiV1BoardsBoardIdSnapshotGet,
   listBoardsApiV1BoardsGet,
@@ -22,7 +22,7 @@ import {
   useGetMyMembershipApiV1OrganizationsMeMemberGet,
 } from "@/api/generated/organizations/organizations";
 import type {
-  活动记录EventRead,
+  ActivityEventRead,
   AgentRead,
   ApprovalRead,
   BoardMemoryRead,
@@ -31,7 +31,7 @@ import type {
   TaskRead,
 } from "@/api/generated/model";
 import { Markdown } from "@/components/atoms/Markdown";
-import { 活动记录Feed } from "@/components/activity/活动记录Feed";
+import { ActivityFeed } from "@/components/activity/ActivityFeed";
 import { SignedOutPanel } from "@/components/auth/SignedOutPanel";
 import { DashboardSidebar } from "@/components/organisms/DashboardSidebar";
 import { DashboardShell } from "@/components/templates/DashboardShell";
@@ -101,7 +101,7 @@ type TaskMeta = {
   boardId: string | null;
 };
 
-type 活动记录RouteParams = Record<string, string>;
+type ActivityRouteParams = Record<string, string>;
 
 const ACTIVITY_FEED_PATH = "/activity";
 
@@ -127,10 +127,10 @@ const formatShortTimestamp = (value: string) => {
 };
 
 const normalizeRouteParams = (
-  params: 活动记录EventRead["route_params"] | 活动记录RouteParams | null | undefined,
-): 活动记录RouteParams => {
+  params: ActivityEventRead["route_params"] | ActivityRouteParams | null | undefined,
+): ActivityRouteParams => {
   if (!params || typeof params !== "object") return {};
-  return Object.entries(params).reduce<活动记录RouteParams>((acc, [key, value]) => {
+  return Object.entries(params).reduce<ActivityRouteParams>((acc, [key, value]) => {
     if (typeof value === "string" && value.length > 0) {
       acc[key] = value;
     }
@@ -140,7 +140,7 @@ const normalizeRouteParams = (
 
 const buildRouteHref = (
   routeName: string | null | undefined,
-  routeParams: 活动记录RouteParams,
+  routeParams: ActivityRouteParams,
   fallback: {
     eventId: string;
     eventType: string;
@@ -185,7 +185,7 @@ const buildRouteHref = (
 };
 
 const buildBoardHref = (
-  routeParams: 活动记录RouteParams,
+  routeParams: ActivityRouteParams,
   boardId: string | null,
 ): string | null => {
   const resolved = routeParams.boardId ?? boardId;
@@ -382,7 +382,7 @@ const FeedCard = memo(function FeedCard({
 
 FeedCard.displayName = "FeedCard";
 
-export default function 活动记录Page() {
+export default function ActivityPage() {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -491,9 +491,9 @@ export default function 活动记录Page() {
     [],
   );
 
-  const mapTask活动记录 = useCallback(
+  const mapTaskActivity = useCallback(
     (
-      event: 活动记录EventRead,
+      event: ActivityEventRead,
       fallbackBoardId: string | null = null,
     ): FeedItem | null => {
       if (!isTaskEventType(event.event_type)) return null;
@@ -509,7 +509,7 @@ export default function 活动记录Page() {
         routeParams.boardId ??
         fallbackBoardId ??
         null;
-      const fallbackRouteParams: 活动记录RouteParams = {};
+      const fallbackRouteParams: ActivityRouteParams = {};
       if (boardId) fallbackRouteParams.boardId = boardId;
       if (taskId) fallbackRouteParams.taskId = taskId;
       const effectiveRouteParams =
@@ -551,7 +551,7 @@ export default function 活动记录Page() {
         : null;
       const boardId = meta?.boardId ?? fallbackBoardId;
       const taskId = comment.task_id ?? null;
-      const routeParams: 活动记录RouteParams = {};
+      const routeParams: ActivityRouteParams = {};
       if (boardId) routeParams.boardId = boardId;
       if (taskId) routeParams.taskId = taskId;
       routeParams.commentId = comment.id;
@@ -630,7 +630,7 @@ export default function 活动记录Page() {
       const taskMeta = approval.task_id
         ? taskMetaByIdRef.current.get(approval.task_id)
         : null;
-      const routeParams: 活动记录RouteParams = { boardId };
+      const routeParams: ActivityRouteParams = { boardId };
       const taskId = approval.task_id ?? null;
 
       return {
@@ -667,7 +667,7 @@ export default function 活动记录Page() {
         currentUserDisplayName,
       );
       const command = content.startsWith("/");
-      const routeParams: 活动记录RouteParams = { boardId, panel: "chat" };
+      const routeParams: ActivityRouteParams = { boardId, panel: "chat" };
       return {
         id: `chat:${memory.id}`,
         created_at: memory.created_at,
@@ -741,7 +741,7 @@ export default function 活动记录Page() {
               ? `${agent.name} is offline.`
               : `${agent.name} updated (${humanizeStatus(nextStatus)}).`;
       const boardId = agent.board_id ?? null;
-      const routeParams: 活动记录RouteParams = boardId
+      const routeParams: ActivityRouteParams = boardId
         ? { boardId }
         : {};
 
@@ -880,7 +880,7 @@ export default function 活动记录Page() {
         });
 
         for (let offset = 0; offset < PAGED_MAX; offset += PAGED_LIMIT) {
-          const result = await list活动记录ApiV1活动记录Get({
+          const result = await listActivityApiV1ActivityGet({
             limit: PAGED_LIMIT,
             offset,
           });
@@ -890,7 +890,7 @@ export default function 活动记录Page() {
           }
           const items = result.data.items ?? [];
           for (const event of items) {
-            const mapped = mapTask活动记录(event);
+            const mapped = mapTaskActivity(event);
             if (!mapped || seedSeen.has(mapped.id)) continue;
             seedSeen.add(mapped.id);
             seeded.push(mapped);
@@ -929,7 +929,7 @@ export default function 活动记录Page() {
     mapAgentEvent,
     mapApprovalEvent,
     mapBoardChat,
-    mapTask活动记录,
+    mapTaskActivity,
   ]);
 
   useEffect(() => {
@@ -999,7 +999,7 @@ export default function 活动记录Page() {
                 try {
                   const payload = JSON.parse(data) as {
                     type?: string;
-                    activity?: 活动记录EventRead;
+                    activity?: ActivityEventRead;
                     task?: TaskRead;
                     comment?: TaskCommentRead;
                   };
@@ -1007,7 +1007,7 @@ export default function 活动记录Page() {
                     updateTaskMeta(payload.task, boardId);
                   }
                   if (payload.activity) {
-                    const mapped = mapTask活动记录(payload.activity, boardId);
+                    const mapped = mapTaskActivity(payload.activity, boardId);
                     if (mapped) {
                       if (!mapped.task_title && payload.task?.title) {
                         mapped.task_title = payload.task.title;
@@ -1070,7 +1070,7 @@ export default function 活动记录Page() {
     isPageActive,
     isSignedIn,
     latestTimestamp,
-    mapTask活动记录,
+    mapTaskActivity,
     mapTaskComment,
     pushFeedItem,
     updateTaskMeta,
@@ -1512,14 +1512,13 @@ export default function 活动记录Page() {
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
-                        <活动记录Icon className="h-5 w-5 text-slate-600" />
+                        <ActivityIcon className="h-5 w-5 text-slate-600" />
                         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
                           实时动态
                         </h1>
                       </div>
                       <p className="mt-1 text-sm text-slate-500">
-                        Realtime task, approval, agent, and board-chat activity
-                        across all boards.
+                        跨所有看板的任务、审批、智能体和聊天的实时活动记录。
                       </p>
                     </div>
                   </div>
@@ -1529,10 +1528,10 @@ export default function 活动记录Page() {
               <div className="p-4 md:p-8">
                 {hasUnresolvedDeepLink ? (
                   <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
-                    Requested activity item is not in the current feed window yet.
+                    请求的活动项目暂不在当前动态窗口中。
                   </div>
                 ) : null}
-                <活动记录Feed
+                <ActivityFeed
                   isLoading={isFeedLoading}
                   errorMessage={feedError}
                   items={orderedFeed}

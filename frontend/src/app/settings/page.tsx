@@ -22,22 +22,22 @@ import { Button } from "@/components/ui/button";
 import { ConfirmActionDialog } from "@/components/ui/confirm-action-dialog";
 import { Input } from "@/components/ui/input";
 import SearchableSelect from "@/components/ui/searchable-select";
-import { getSupported时区s } from "@/lib/timezones";
+import { getSupportedTimezones } from "@/lib/timezones";
 
 type ClerkGlobal = {
   signOut?: (options?: { redirectUrl?: string }) => Promise<void> | void;
 };
 
-export default function 设置Page() {
+export default function SettingsPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { isSignedIn } = useAuth();
   const { user } = useUser();
 
   const [name, setName] = useState("");
-  const [timezone, set时区] = useState<string | null>(null);
+  const [timezone, setTimezone] = useState<string | null>(null);
   const [nameEdited, setNameEdited] = useState(false);
-  const [timezoneEdited, set时区Edited] = useState(false);
+  const [timezoneEdited, setTimezoneEdited] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -63,11 +63,11 @@ export default function 设置Page() {
   const resolvedName = nameEdited
     ? name
     : (profile?.name ?? profile?.preferred_name ?? clerkFallbackName);
-  const resolved时区 = timezoneEdited
+  const resolvedTimezone = timezoneEdited
     ? (timezone ?? "")
     : (profile?.timezone ?? "");
 
-  const timezones = useMemo(() => getSupported时区s(), []);
+  const timezones = useMemo(() => getSupportedTimezones(), []);
   const timezoneOptions = useMemo(
     () => timezones.map((value) => ({ value, label: value })),
     [timezones],
@@ -77,7 +77,7 @@ export default function 设置Page() {
     mutation: {
       onSuccess: async () => {
         setSaveError(null);
-        setSaveSuccess("设置 saved.");
+        setSaveSuccess("Settings saved.");
         await queryClient.invalidateQueries({ queryKey: meQueryKey });
       },
       onError: (error) => {
@@ -87,7 +87,7 @@ export default function 设置Page() {
     },
   });
 
-  const delete账户Mutation = useDeleteMeApiV1UsersMeDelete<ApiError>({
+  const deleteAccountMutation = useDeleteMeApiV1UsersMeDelete<ApiError>({
     mutation: {
       onSuccess: async () => {
         setDeleteError(null);
@@ -113,7 +113,7 @@ export default function 设置Page() {
   const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isSignedIn) return;
-    if (!resolvedName.trim() || !resolved时区.trim()) {
+    if (!resolvedName.trim() || !resolvedTimezone.trim()) {
       setSaveSuccess(null);
       setSaveError("Name and timezone are required.");
       return;
@@ -123,16 +123,16 @@ export default function 设置Page() {
     await updateMeMutation.mutateAsync({
       data: {
         name: resolvedName.trim(),
-        timezone: resolved时区.trim(),
+        timezone: resolvedTimezone.trim(),
       },
     });
   };
 
   const handleReset = () => {
     setName("");
-    set时区(null);
+    setTimezone(null);
     setNameEdited(false);
-    set时区Edited(false);
+    setTimezoneEdited(false);
     setSaveError(null);
     setSaveSuccess(null);
   };
@@ -178,14 +178,14 @@ export default function 设置Page() {
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
                     <Globe className="h-4 w-4 text-slate-500" />
-                    时区
+                    Timezone
                   </label>
                   <SearchableSelect
                     ariaLabel="Select timezone"
-                    value={resolved时区}
+                    value={resolvedTimezone}
                     onValueChange={(value) => {
-                      set时区(value);
-                      set时区Edited(true);
+                      setTimezone(value);
+                      setTimezoneEdited(true);
                     }}
                     options={timezoneOptions}
                     placeholder="Select timezone"
@@ -246,8 +246,8 @@ export default function 设置Page() {
               删除账户
             </h2>
             <p className="mt-1 text-sm text-rose-800">
-              这将永久删除您的任务控制台账户及相关
-              personal data. 此操作不可撤销。
+              This permanently removes your Mission Control account and related
+              personal data. This action cannot be undone.
             </p>
             <div className="mt-4">
               <Button
@@ -257,7 +257,7 @@ export default function 设置Page() {
                   setDeleteError(null);
                   setDeleteDialogOpen(true);
                 }}
-                disabled={delete账户Mutation.isPending}
+                disabled={deleteAccountMutation.isPending}
               >
                 <Trash2 className="h-4 w-4" />
                 删除账户
@@ -272,12 +272,12 @@ export default function 设置Page() {
         onOpenChange={setDeleteDialogOpen}
         title="Delete your account?"
         description="Your account and personal data will be permanently deleted."
-        onConfirm={() => delete账户Mutation.mutate()}
-        isConfirming={delete账户Mutation.isPending}
+        onConfirm={() => deleteAccountMutation.mutate()}
+        isConfirming={deleteAccountMutation.isPending}
         errorMessage={deleteError}
-        confirmLabel="删除账户"
+        confirmLabel="Delete account"
         confirmingLabel="Deleting account…"
-        ariaLabel="删除账户 confirmation"
+        ariaLabel="Delete account confirmation"
       />
     </>
   );

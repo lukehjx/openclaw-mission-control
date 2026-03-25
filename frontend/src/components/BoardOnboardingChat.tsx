@@ -13,15 +13,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { usePageActive } from "@/hooks/usePageActive";
 
 import {
-  answer初始化配置ApiV1BoardsBoardId初始化配置AnswerPost,
-  confirm初始化配置ApiV1BoardsBoardId初始化配置ConfirmPost,
-  get初始化配置ApiV1BoardsBoardId初始化配置Get,
-  start初始化配置ApiV1BoardsBoardId初始化配置StartPost,
+  answerOnboardingApiV1BoardsBoardIdOnboardingAnswerPost,
+  confirmOnboardingApiV1BoardsBoardIdOnboardingConfirmPost,
+  getOnboardingApiV1BoardsBoardIdOnboardingGet,
+  startOnboardingApiV1BoardsBoardIdOnboardingStartPost,
 } from "@/api/generated/board-onboarding/board-onboarding";
 import type {
-  Board初始化配置Agent完成,
-  Board初始化配置Read,
-  Board初始化配置ReadMessages,
+  BoardOnboardingAgentComplete,
+  BoardOnboardingRead,
+  BoardOnboardingReadMessages,
   BoardRead,
 } from "@/api/generated/model";
 
@@ -37,7 +37,7 @@ type NormalizedMessage = {
  * or malformed entries.
  */
 const normalizeMessages = (
-  value?: Board初始化配置ReadMessages,
+  value?: BoardOnboardingReadMessages,
 ): NormalizedMessage[] | null => {
   if (!value) return null;
   if (!Array.isArray(value)) return null;
@@ -133,7 +133,7 @@ const parseQuestion = (messages?: NormalizedMessage[] | null) => {
   return null;
 };
 
-export function Board初始化配置Chat({
+export function BoardOnboardingChat({
   boardId,
   onConfirmed,
 }: {
@@ -141,7 +141,7 @@ export function Board初始化配置Chat({
   onConfirmed: (board: BoardRead) => void;
 }) {
   const isPageActive = usePageActive();
-  const [session, setSession] = useState<Board初始化配置Read | null>(null);
+  const [session, setSession] = useState<BoardOnboardingRead | null>(null);
   const [loading, setLoading] = useState(false);
   const [awaitingAssistantFingerprint, setAwaitingAssistantFingerprint] =
     useState<string | null>(null);
@@ -181,7 +181,7 @@ export function Board初始化配置Chat({
     () => parseQuestion(normalizedMessages),
     [normalizedMessages],
   );
-  const draft: Board初始化配置Agent完成 | null =
+  const draft: BoardOnboardingAgentComplete | null =
     session?.draft_goal ?? null;
 
   const isAwaitingAgent = useMemo(() => {
@@ -217,7 +217,7 @@ export function Board初始化配置Chat({
     setLoading(true);
     setError(null);
     try {
-      const result = await start初始化配置ApiV1BoardsBoardId初始化配置StartPost(
+      const result = await startOnboardingApiV1BoardsBoardIdOnboardingStartPost(
         boardId,
         {},
       );
@@ -235,7 +235,7 @@ export function Board初始化配置Chat({
   const refreshSession = useCallback(async () => {
     try {
       const result =
-        await get初始化配置ApiV1BoardsBoardId初始化配置Get(boardId);
+        await getOnboardingApiV1BoardsBoardIdOnboardingGet(boardId);
       if (result.status !== 200) return;
       setSession(result.data);
     } catch {
@@ -269,7 +269,7 @@ export function Board初始化配置Chat({
       setLastSubmittedAnswer(null);
       try {
         const result =
-          await answer初始化配置ApiV1BoardsBoardId初始化配置AnswerPost(
+          await answerOnboardingApiV1BoardsBoardIdOnboardingAnswerPost(
             boardId,
             {
               answer: value,
@@ -313,7 +313,7 @@ export function Board初始化配置Chat({
     setLastSubmittedAnswer(null);
     try {
       const result =
-        await answer初始化配置ApiV1BoardsBoardId初始化配置AnswerPost(boardId, {
+        await answerOnboardingApiV1BoardsBoardIdOnboardingAnswerPost(boardId, {
           answer: "Additional context",
           other_text: trimmed,
         });
@@ -357,7 +357,7 @@ export function Board初始化配置Chat({
     setError(null);
     try {
       const result =
-        await confirm初始化配置ApiV1BoardsBoardId初始化配置ConfirmPost(
+        await confirmOnboardingApiV1BoardsBoardIdOnboardingConfirmPost(
           boardId,
           {
             board_type: draft.board_type ?? "goal",

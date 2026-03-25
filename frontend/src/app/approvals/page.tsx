@@ -9,22 +9,22 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import type { ApiError } from "@/api/mutator";
 import {
-  list审批ApiV1BoardsBoardId审批Get,
-  updateApprovalApiV1BoardsBoardId审批ApprovalIdPatch,
+  listApprovalsApiV1BoardsBoardIdApprovalsGet,
+  updateApprovalApiV1BoardsBoardIdApprovalsApprovalIdPatch,
 } from "@/api/generated/approvals/approvals";
 import { useListBoardsApiV1BoardsGet } from "@/api/generated/boards/boards";
 import type { ApprovalRead, BoardRead } from "@/api/generated/model";
-import { Board审批Panel } from "@/components/Board审批Panel";
+import { BoardApprovalsPanel } from "@/components/BoardApprovalsPanel";
 import { DashboardSidebar } from "@/components/organisms/DashboardSidebar";
 import { DashboardShell } from "@/components/templates/DashboardShell";
 import { Button } from "@/components/ui/button";
 
-type Global审批Data = {
+type GlobalApprovalsData = {
   approvals: ApprovalRead[];
   warnings: string[];
 };
 
-function Global审批Inner() {
+function GlobalApprovalsInner() {
   const { isSignedIn } = useAuth();
   const queryClient = useQueryClient();
 
@@ -59,7 +59,7 @@ function Global审批Inner() {
     [boardIdsKey],
   );
 
-  const approvalsQuery = useQuery<Global审批Data, ApiError>({
+  const approvalsQuery = useQuery<GlobalApprovalsData, ApiError>({
     queryKey: approvalsKey,
     enabled: Boolean(isSignedIn && boards.length > 0),
     refetchInterval: 15_000,
@@ -68,7 +68,7 @@ function Global审批Inner() {
     queryFn: async () => {
       const results = await Promise.allSettled(
         boards.map(async (board) => {
-          const response = await list审批ApiV1BoardsBoardId审批Get(
+          const response = await listApprovalsApiV1BoardsBoardIdApprovalsGet(
             board.id,
             { limit: 200 },
             { cache: "no-store" },
@@ -100,14 +100,14 @@ function Global审批Inner() {
   const updateApprovalMutation = useMutation<
     Awaited<
       ReturnType<
-        typeof updateApprovalApiV1BoardsBoardId审批ApprovalIdPatch
+        typeof updateApprovalApiV1BoardsBoardIdApprovalsApprovalIdPatch
       >
     >,
     ApiError,
     { boardId: string; approvalId: string; status: "approved" | "rejected" }
   >({
     mutationFn: ({ boardId, approvalId, status }) =>
-      updateApprovalApiV1BoardsBoardId审批ApprovalIdPatch(
+      updateApprovalApiV1BoardsBoardIdApprovalsApprovalIdPatch(
         boardId,
         approvalId,
         { status },
@@ -136,7 +136,7 @@ function Global审批Inner() {
         {
           onSuccess: (result) => {
             if (result.status !== 200) return;
-            queryClient.setQueryData<Global审批Data>(
+            queryClient.setQueryData<GlobalApprovalsData>(
               approvalsKey,
               (prev) => {
                 if (!prev) return prev;
@@ -169,7 +169,7 @@ function Global审批Inner() {
     <main className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="p-4 md:p-6">
         <div className="h-[calc(100vh-160px)] min-h-[300px] sm:min-h-[520px]">
-          <Board审批Panel
+          <BoardApprovalsPanel
             boardId="global"
             approvals={approvals}
             isLoading={boardsQuery.isLoading || approvalsQuery.isLoading}
@@ -184,7 +184,7 @@ function Global审批Inner() {
   );
 }
 
-export default function Global审批Page() {
+export default function GlobalApprovalsPage() {
   return (
     <DashboardShell>
       <SignedOut>
@@ -201,7 +201,7 @@ export default function Global审批Page() {
       </SignedOut>
       <SignedIn>
         <DashboardSidebar />
-        <Global审批Inner />
+        <GlobalApprovalsInner />
       </SignedIn>
     </DashboardShell>
   );
