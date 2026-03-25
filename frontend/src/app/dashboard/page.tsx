@@ -722,19 +722,19 @@ export default function DashboardPage() {
             ? "不可用"
             : "未连接";
   const gatewayBadgeTone: "online" | "offline" | "neutral" =
-    gatewayStatusLabel === "All connected"
+    gatewayStatusLabel === "全部已连接"
       ? "online"
-      : gatewayStatusLabel === "Partially connected" ||
-          gatewayStatusLabel === "Disconnected" ||
-          gatewayStatusLabel === "Unavailable"
+      : gatewayStatusLabel === "部分已连接" ||
+          gatewayStatusLabel === "未连接" ||
+          gatewayStatusLabel === "不可用"
         ? "offline"
         : "neutral";
   const gatewayStatusTone: SummaryRow["tone"] =
-    gatewayStatusLabel === "All connected"
+    gatewayStatusLabel === "全部已连接"
       ? "success"
-      : gatewayStatusLabel === "Checking" || gatewayStatusLabel === "Not configured"
+      : gatewayStatusLabel === "检查中" || gatewayStatusLabel === "未配置"
         ? "default"
-        : gatewayStatusLabel === "Partially connected" || gatewayStatusLabel === "Disconnected"
+        : gatewayStatusLabel === "部分已连接" || gatewayStatusLabel === "未连接"
           ? "warning"
           : "danger";
 
