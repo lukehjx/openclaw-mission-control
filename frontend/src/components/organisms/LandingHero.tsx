@@ -34,16 +34,14 @@ export function LandingHero() {
     <>
       <section className="hero">
         <div className="hero-content">
-          <div className="hero-label">OpenClaw Mission Control</div>
+          <div className="hero-label">任务控制台</div>
           <h1>
-            Command <span className="hero-highlight">autonomous work.</span>
+            指挥 <span className="hero-highlight">自主工作。</span>
             <br />
-            Keep human oversight.
+            保持人类监督。
           </h1>
           <p>
-            Track tasks, approvals, and agent health in one unified command
-            center. Get real-time signals when work changes, without losing the
-            thread of execution.
+            在统一指挥中心跟踪任务、审批和智能体状态。实时获取工作变更信号，不遗漏任何执行细节。
           </p>
 
           <div className="hero-actions">
@@ -56,7 +54,7 @@ export function LandingHero() {
                     signUpForceRedirectUrl="/boards"
                   >
                     <button type="button" className="btn-large primary">
-                      Open Boards <ArrowIcon />
+                      查看看板 <ArrowIcon />
                     </button>
                   </SignInButton>
                   <SignInButton
@@ -65,17 +63,17 @@ export function LandingHero() {
                     signUpForceRedirectUrl="/boards/new"
                   >
                     <button type="button" className="btn-large secondary">
-                      Create Board
+                      创建看板
                     </button>
                   </SignInButton>
                 </>
               ) : (
                 <>
                   <Link href="/boards" className="btn-large primary">
-                    Open Boards <ArrowIcon />
+                    查看看板 <ArrowIcon />
                   </Link>
                   <Link href="/boards/new" className="btn-large secondary">
-                    Create Board
+                    创建看板
                   </Link>
                 </>
               )}
@@ -83,16 +81,16 @@ export function LandingHero() {
 
             <SignedIn>
               <Link href="/boards" className="btn-large primary">
-                Open Boards <ArrowIcon />
+                查看看板 <ArrowIcon />
               </Link>
               <Link href="/boards/new" className="btn-large secondary">
-                Create Board
+                创建看板
               </Link>
             </SignedIn>
           </div>
 
           <div className="hero-features">
-            {["Agent-First Operations", "Approval Queues", "Live Signals"].map(
+            {["智能体优先运营", "审批队列", "实时信号"].map(
               (label) => (
                 <div key={label} className="hero-feature">
                   <div className="feature-icon">✓</div>
@@ -105,23 +103,23 @@ export function LandingHero() {
 
         <div className="command-surface">
           <div className="surface-header">
-            <div className="surface-title">Command Surface</div>
+            <div className="surface-title">指挥界面</div>
             <div className="live-indicator">
               <div className="live-dot" />
               LIVE
             </div>
           </div>
           <div className="surface-subtitle">
-            <h3>Ship work without losing the thread.</h3>
+            <h3>高效推进工作，不遗漏任何进展。</h3>
             <p>
-              Tasks, approvals, and agent status stay synced across the board.
+              任务、审批和智能体状态在整个看板上保持同步。
             </p>
           </div>
           <div className="metrics-row">
             {[
-              { label: "Boards", value: "12" },
-              { label: "Agents", value: "08" },
-              { label: "Tasks", value: "46" },
+              { label: "看板", value: "12" },
+              { label: "智能体", value: "08" },
+              { label: "任务", value: "46" },
             ].map((item) => (
               <div key={item.label} className="metric">
                 <div className="metric-value">{item.value}</div>
@@ -131,11 +129,11 @@ export function LandingHero() {
           </div>
           <div className="surface-content">
             <div className="content-section">
-              <h4>Board — In Progress</h4>
+              <h4>看板 — 进行中</h4>
               {[
-                "Cut release candidate",
-                "Triage approvals backlog",
-                "Stabilize agent handoffs",
+                "准备发布候选版本",
+                "处理审批积压",
+                "稳定智能体交接",
               ].map((title) => (
                 <div key={title} className="status-item">
                   <div className="status-icon progress">⊙</div>
@@ -147,11 +145,11 @@ export function LandingHero() {
             </div>
 
             <div className="content-section">
-              <h4>Approvals — 3 Pending</h4>
+              <h4>审批 — 3 个待处理</h4>
               {[
-                { title: "Deploy window confirmed", status: "ready" as const },
-                { title: "Copy reviewed", status: "waiting" as const },
-                { title: "Security sign-off", status: "waiting" as const },
+                { title: "部署窗口已确认", status: "ready" as const },
+                { title: "内容已审核", status: "waiting" as const },
+                { title: "安全审批", status: "waiting" as const },
               ].map((item) => (
                 <div key={item.title} className="approval-item">
                   <div className="approval-title">{item.title}</div>
@@ -170,11 +168,11 @@ export function LandingHero() {
             }}
           >
             <div className="content-section">
-              <h4>Signals — Updated Moments Ago</h4>
+              <h4>信号 — 刚刚更新</h4>
               {[
-                { text: "Agent Delta moved task to review", time: "Now" },
-                { text: "Growth Ops hit WIP limit", time: "5m" },
-                { text: "Release pipeline stabilized", time: "12m" },
+                { text: "智能体 Delta 将任务移至待审核", time: "Now" },
+                { text: "增长运营到达 WIP 限制", time: "5m" },
+                { text: "发布流水线已稳定", time: "12m" },
               ].map((signal) => (
                 <div key={signal.text} className="signal-item">
                   <div className="signal-text">{signal.text}</div>
@@ -190,24 +188,24 @@ export function LandingHero() {
         <div className="features-grid">
           {[
             {
-              title: "Boards as ops maps",
+              title: "看板即运营地图",
               description:
-                "Keep tasks, priorities, dependencies, and ownership visible at a glance.",
+                "一目了然地查看任务、优先级、依赖关系和负责人。",
             },
             {
-              title: "Approvals that move",
+              title: "流动的审批",
               description:
-                "Queue, comment, and approve without losing context or slowing execution.",
+                "排队、评论、审批，不丢失上下文，不拖慢执行。",
             },
             {
-              title: "Realtime signals",
+              title: "实时信号",
               description:
-                "See work change as it happens: tasks, agent status, and approvals update live.",
+                "实时查看工作变化：任务、智能体状态和审批实时更新。",
             },
             {
-              title: "Audit trail built in",
+              title: "内置审计追踪",
               description:
-                "Every decision leaves a trail, so the board stays explainable and reviewable.",
+                "每个决策都留有记录，使看板保持可解释性和可审查性。",
             },
           ].map((feature, idx) => (
             <div key={feature.title} className="feature-card">
@@ -223,10 +221,9 @@ export function LandingHero() {
 
       <section className="cta-section">
         <div className="cta-content">
-          <h2>Start with one board. Grow into a control room.</h2>
+          <h2>从一个看板开始，发展成为指挥中心。</h2>
           <p>
-            Onboard a board, name a lead agent, and keep approvals and signals
-            visible from day one.
+            接入一个看板，指定主智能体，从第一天起就保持审批和信号可见。
           </p>
           <div className="cta-actions">
             <SignedOut>
@@ -238,7 +235,7 @@ export function LandingHero() {
                     signUpForceRedirectUrl="/boards/new"
                   >
                     <button type="button" className="btn-large white">
-                      Create Board
+                      创建看板
                     </button>
                   </SignInButton>
                   <SignInButton
@@ -247,17 +244,17 @@ export function LandingHero() {
                     signUpForceRedirectUrl="/boards"
                   >
                     <button type="button" className="btn-large outline">
-                      View Boards
+                      查看看板
                     </button>
                   </SignInButton>
                 </>
               ) : (
                 <>
                   <Link href="/boards/new" className="btn-large white">
-                    Create Board
+                    创建看板
                   </Link>
                   <Link href="/boards" className="btn-large outline">
-                    View Boards
+                    查看看板
                   </Link>
                 </>
               )}
@@ -265,10 +262,10 @@ export function LandingHero() {
 
             <SignedIn>
               <Link href="/boards/new" className="btn-large white">
-                Create Board
+                创建看板
               </Link>
               <Link href="/boards" className="btn-large outline">
-                View Boards
+                查看看板
               </Link>
             </SignedIn>
           </div>

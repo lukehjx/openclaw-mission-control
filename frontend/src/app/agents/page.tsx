@@ -125,21 +125,21 @@ export default function AgentsPage() {
     <>
       <DashboardPageLayout
         signedOut={{
-          message: "Sign in to view agents.",
+          message: "登录后方可查看智能体。",
           forceRedirectUrl: "/agents",
           signUpForceRedirectUrl: "/agents",
         }}
-        title="Agents"
-        description={`${agents.length} agent${agents.length === 1 ? "" : "s"} total.`}
+        title="智能体"
+        description={`共 ${agents.length} 个智能体。`}
         headerActions={
           agents.length > 0 ? (
             <Button onClick={() => router.push("/agents/new")}>
-              New agent
+              新建智能体
             </Button>
           ) : null
         }
         isAdmin={isAdmin}
-        adminOnlyMessage="Only organization owners and admins can access agents."
+        adminOnlyMessage="仅组织所有者和管理员可访问智能体。"
         stickyHeader
       >
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -153,11 +153,11 @@ export default function AgentsPage() {
             stickyHeader
             onDelete={setDeleteTarget}
             emptyState={{
-              title: "No agents yet",
+              title: "暂无智能体",
               description:
-                "Create your first agent to start executing tasks on this board.",
+                "创建第一个智能体，开始在看板上执行任务。",
               actionHref: "/agents/new",
-              actionLabel: "Create your first agent",
+              actionLabel: "创建第一个智能体",
             }}
           />
         </div>
@@ -176,11 +176,11 @@ export default function AgentsPage() {
             setDeleteTarget(null);
           }
         }}
-        ariaLabel="Delete agent"
+        ariaLabel="删除智能体"
         title="Delete agent"
         description={
           <>
-            This will remove {deleteTarget?.name}. This action cannot be undone.
+            确定要删除 {deleteTarget?.name} 吗？此操作不可撤销。
           </>
         }
         errorMessage={deleteMutation.error?.message}

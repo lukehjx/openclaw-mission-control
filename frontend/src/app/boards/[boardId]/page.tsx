@@ -280,7 +280,7 @@ const toLiveFeedFromBoardChat = (memory: BoardChatMessage): LiveFeedItem => {
     agent_id: null,
     actor_name: actorName,
     task_id: null,
-    title: isCommand ? "Board command" : "Board chat",
+    title: isCommand ? "看板指令" : "看板聊天",
     event_type: isCommand ? "board.command" : "board.chat",
   };
 };
@@ -368,7 +368,7 @@ const toLiveFeedFromAgentUpdate = (
 
 const humanizeLiveFeedApprovalAction = (value: string): string => {
   const cleaned = value.replace(/[._-]+/g, " ").trim();
-  if (!cleaned) return "Approval";
+  if (!cleaned) return "审批";
   return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 };
 
@@ -424,20 +424,20 @@ const toLiveFeedFromApproval = (
 };
 
 const liveFeedEventLabel = (eventType: LiveFeedEventType): string => {
-  if (eventType === "task.comment") return "Comment";
-  if (eventType === "task.created") return "Created";
-  if (eventType === "task.status_changed") return "Status";
-  if (eventType === "board.chat") return "Chat";
-  if (eventType === "board.command") return "Command";
-  if (eventType === "agent.created") return "Agent";
-  if (eventType === "agent.online") return "Online";
-  if (eventType === "agent.offline") return "Offline";
-  if (eventType === "agent.updated") return "Agent update";
-  if (eventType === "approval.created") return "Approval";
-  if (eventType === "approval.updated") return "Approval update";
-  if (eventType === "approval.approved") return "Approved";
-  if (eventType === "approval.rejected") return "Rejected";
-  return "Updated";
+  if (eventType === "task.comment") return "评论";
+  if (eventType === "task.created") return "已创建";
+  if (eventType === "task.status_changed") return "状态";
+  if (eventType === "board.chat") return "聊天";
+  if (eventType === "board.command") return "指令";
+  if (eventType === "agent.created") return "智能体";
+  if (eventType === "agent.online") return "在线";
+  if (eventType === "agent.offline") return "离线";
+  if (eventType === "agent.updated") return "智能体更新";
+  if (eventType === "approval.created") return "审批";
+  if (eventType === "approval.updated") return "审批更新";
+  if (eventType === "approval.approved") return "已审批";
+  if (eventType === "approval.rejected") return "已拒绝";
+  return "已更新";
 };
 
 const liveFeedEventPillClass = (eventType: LiveFeedEventType): string => {
@@ -508,15 +508,15 @@ const normalizeTagColor = (value?: string | null) => {
 };
 
 const priorities = [
-  { value: "low", label: "Low" },
-  { value: "medium", label: "Medium" },
-  { value: "high", label: "High" },
+  { value: "low", label: "低" },
+  { value: "medium", label: "中" },
+  { value: "high", label: "高" },
 ];
 const statusOptions = [
-  { value: "inbox", label: "Inbox" },
-  { value: "in_progress", label: "In progress" },
-  { value: "review", label: "Review" },
-  { value: "done", label: "Done" },
+  { value: "inbox", label: "收件箱" },
+  { value: "in_progress", label: "进行中" },
+  { value: "review", label: "待审核" },
+  { value: "done", label: "已完成" },
 ];
 
 const SSE_RECONNECT_BACKOFF = {
@@ -549,7 +549,7 @@ type ToastMessage = {
 const formatActionError = (err: unknown, fallback: string) => {
   if (err instanceof ApiError) {
     if (err.status === 403) {
-      return "Read-only access. You do not have permission to make changes.";
+      return "只读访问，您没有修改权限。";
     }
     return err.message || fallback;
   }
@@ -1078,7 +1078,7 @@ export default function BoardDetailPage() {
           });
           if (cancelled) return;
           if (result.status !== 200) {
-            throw new Error("Unable to load live feed.");
+            throw new Error("无法加载实时动态。");
           }
           const items = result.data.items ?? [];
           for (const event of items) {
@@ -1110,7 +1110,7 @@ export default function BoardDetailPage() {
       } catch (err) {
         if (cancelled) return;
         setLiveFeedHistoryError(
-          err instanceof Error ? err.message : "Unable to load live feed.",
+          err instanceof Error ? err.message : "无法加载实时动态。",
         );
       } finally {
         if (cancelled) return;
@@ -1180,7 +1180,7 @@ export default function BoardDetailPage() {
   }, [boardCustomFieldDefinitions]);
 
   const titleLabel = useMemo(
-    () => (board ? `${board.name} board` : "Board"),
+    () => (board ? `${board.name}` : "看板"),
     [board],
   );
 
@@ -1259,7 +1259,7 @@ export default function BoardDetailPage() {
       const snapshotResult =
         await getBoardSnapshotApiV1BoardsBoardIdSnapshotGet(boardId);
       if (snapshotResult.status !== 200) {
-        throw new Error("Unable to load board snapshot.");
+        throw new Error("无法加载看板快照。");
       }
       const snapshot = snapshotResult.data;
       setBoard(snapshot.board);
@@ -1287,13 +1287,13 @@ export default function BoardDetailPage() {
         const message =
           groupErr instanceof Error
             ? groupErr.message
-            : "Unable to load board group snapshot.";
+            : "无法加载看板组快照。";
         setGroupSnapshotError(message);
         setGroupSnapshot(null);
       }
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Something went wrong.";
+        err instanceof Error ? err.message : "出错了。";
       setError(message);
       setApprovalsError(message);
       setChatError(message);
@@ -1397,11 +1397,11 @@ export default function BoardDetailPage() {
             },
           );
         if (streamResult.status !== 200) {
-          throw new Error("Unable to connect board chat stream.");
+          throw new Error("无法连接看板聊天流。");
         }
         const response = streamResult.data as Response;
         if (!(response instanceof Response) || !response.body) {
-          throw new Error("Unable to connect board chat stream.");
+          throw new Error("无法连接看板聊天流。");
         }
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -1514,11 +1514,11 @@ export default function BoardDetailPage() {
             },
           );
         if (streamResult.status !== 200) {
-          throw new Error("Unable to connect approvals stream.");
+          throw new Error("无法连接审批流。");
         }
         const response = streamResult.data as Response;
         if (!(response instanceof Response) || !response.body) {
-          throw new Error("Unable to connect approvals stream.");
+          throw new Error("无法连接审批流。");
         }
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -1699,11 +1699,11 @@ export default function BoardDetailPage() {
           },
         );
         if (streamResult.status !== 200) {
-          throw new Error("Unable to connect task stream.");
+          throw new Error("无法连接任务流。");
         }
         const response = streamResult.data as Response;
         if (!(response instanceof Response) || !response.body) {
-          throw new Error("Unable to connect task stream.");
+          throw new Error("无法连接任务流。");
         }
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -1871,11 +1871,11 @@ export default function BoardDetailPage() {
           },
         );
         if (streamResult.status !== 200) {
-          throw new Error("Unable to connect agent stream.");
+          throw new Error("无法连接智能体流。");
         }
         const response = streamResult.data as Response;
         if (!(response instanceof Response) || !response.body) {
-          throw new Error("Unable to connect agent stream.");
+          throw new Error("无法连接智能体流。");
         }
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -1981,7 +1981,7 @@ export default function BoardDetailPage() {
     if (!isSignedIn || !boardId) return;
     const trimmed = title.trim();
     if (!trimmed) {
-      setCreateError("Add a task title to continue.");
+      setCreateError("请添加任务标题以继续。");
       return;
     }
     const createCustomFieldPayload = customFieldPayload(
@@ -2014,7 +2014,7 @@ export default function BoardDetailPage() {
         boardId,
         payload,
       );
-      if (result.status !== 200) throw new Error("Unable to create task.");
+      if (result.status !== 200) throw new Error("无法创建任务。");
 
       const created = normalizeTask({
         ...result.data,
@@ -2028,7 +2028,7 @@ export default function BoardDetailPage() {
       setIsDialogOpen(false);
       resetForm();
     } catch (err) {
-      const message = formatActionError(err, "Something went wrong.");
+      const message = formatActionError(err, "出错了。");
       setCreateError(message);
       pushToast(message);
     } finally {
@@ -2039,7 +2039,7 @@ export default function BoardDetailPage() {
   const postBoardChatMessage = useCallback(
     async (content: string): Promise<{ ok: boolean; error: string | null }> => {
       if (!isSignedIn || !boardId) {
-        return { ok: false, error: "Sign in to send messages." };
+        return { ok: false, error: "登录后方可发送消息。" };
       }
       const trimmed = content.trim();
       if (!trimmed) return { ok: false, error: null };
@@ -2054,7 +2054,7 @@ export default function BoardDetailPage() {
           },
         );
         if (result.status !== 200) {
-          throw new Error("Unable to send message.");
+          throw new Error("无法发送消息。");
         }
         const created = result.data;
         if (created.tags?.includes("chat")) {
@@ -2073,7 +2073,7 @@ export default function BoardDetailPage() {
         }
         return { ok: true, error: null };
       } catch (err) {
-        const message = formatActionError(err, "Unable to send message.");
+        const message = formatActionError(err, "无法发送消息。");
         return { ok: false, error: message };
       }
     },
@@ -2373,11 +2373,11 @@ export default function BoardDetailPage() {
             boardId,
             taskId,
           );
-        if (result.status !== 200) throw new Error("Unable to load comments.");
+        if (result.status !== 200) throw new Error("无法加载评论。");
         setComments(mergeCommentsById(result.data.items ?? []));
       } catch (err) {
         setCommentsError(
-          err instanceof Error ? err.message : "Something went wrong.",
+          err instanceof Error ? err.message : "出错了。",
         );
       } finally {
         setIsCommentsLoading(false);
@@ -2599,7 +2599,7 @@ export default function BoardDetailPage() {
     if (!selectedTask || !boardId || !isSignedIn) return false;
     const trimmed = message.trim();
     if (!trimmed) {
-      setPostCommentError("Write a message before sending.");
+      setPostCommentError("请先输入消息再发送。");
       return false;
     }
     setIsPostingComment(true);
@@ -2611,12 +2611,12 @@ export default function BoardDetailPage() {
           selectedTask.id,
           { message: trimmed },
         );
-      if (result.status !== 200) throw new Error("Unable to send message.");
+      if (result.status !== 200) throw new Error("无法发送消息。");
       const created = result.data;
       setComments((prev) => mergeCommentsById([created], prev));
       return true;
     } catch (err) {
-      const message = formatActionError(err, "Unable to send message.");
+      const message = formatActionError(err, "无法发送消息。");
       setPostCommentError(message);
       pushToast(message);
       return false;
@@ -2629,7 +2629,7 @@ export default function BoardDetailPage() {
     if (!selectedTask || !isSignedIn || !boardId) return;
     const trimmedTitle = editTitle.trim();
     if (!trimmedTitle) {
-      setSaveTaskError("Title is required.");
+      setSaveTaskError("标题不能为空。");
       return;
     }
     const currentTaskCustomFieldValues = boardCustomFieldValues(
@@ -2719,7 +2719,7 @@ export default function BoardDetailPage() {
       }
       if (result.status === 422) {
         setSaveTaskError(
-          result.data.detail?.[0]?.msg ?? "Validation error while saving task.",
+          result.data.detail?.[0]?.msg ?? "保存任务时验证出错。",
         );
         return;
       }
@@ -2745,7 +2745,7 @@ export default function BoardDetailPage() {
         setIsEditDialogOpen(false);
       }
     } catch (err) {
-      const message = formatActionError(err, "Something went wrong.");
+      const message = formatActionError(err, "出错了。");
       setSaveTaskError(message);
       pushToast(message);
     } finally {
@@ -2781,12 +2781,12 @@ export default function BoardDetailPage() {
         boardId,
         selectedTask.id,
       );
-      if (result.status !== 200) throw new Error("Unable to delete task.");
+      if (result.status !== 200) throw new Error("无法删除任务。");
       setTasks((prev) => prev.filter((task) => task.id !== selectedTask.id));
       setIsDeleteDialogOpen(false);
       closeComments();
     } catch (err) {
-      const message = formatActionError(err, "Something went wrong.");
+      const message = formatActionError(err, "出错了。");
       setDeleteTaskError(message);
       pushToast(message);
     } finally {
@@ -2800,7 +2800,7 @@ export default function BoardDetailPage() {
       const currentTask = tasksRef.current.find((task) => task.id === taskId);
       if (!currentTask || currentTask.status === status) return;
       if (currentTask.is_blocked && status !== "inbox") {
-        setError("Task is blocked by incomplete dependencies.");
+        setError("任务被未完成的依赖项阻塞。");
         return;
       }
       const previousTasks = tasksRef.current;
@@ -2837,7 +2837,7 @@ export default function BoardDetailPage() {
         if (result.status === 422) {
           throw new Error(
             result.data.detail?.[0]?.msg ??
-              "Validation error while moving task.",
+              "移动任务时验证出错。",
           );
         }
         const assignee = result.data.assigned_agent_id
@@ -2859,7 +2859,7 @@ export default function BoardDetailPage() {
         );
       } catch (err) {
         setTasks(previousTasks);
-        const message = formatActionError(err, "Unable to move task.");
+        const message = formatActionError(err, "无法移动任务。");
         setError(message);
         pushToast(message);
       }
@@ -2906,9 +2906,9 @@ export default function BoardDetailPage() {
         if (trimmed) return trimmed;
       }
     }
-    if (agent.is_board_lead) return "Board lead";
-    if (agent.is_gateway_main) return "Gateway main";
-    return "Agent";
+    if (agent.is_board_lead) return "主智能体";
+    if (agent.is_gateway_main) return "网关主机";
+    return "智能体";
   };
 
   const formatTaskTimestamp = (value?: string | null) => {
@@ -3025,17 +3025,17 @@ export default function BoardDetailPage() {
     const role = approvalPayloadValue(payload, "role");
     const isAssign = approval.action_type.includes("assign");
     const rows: Array<{ label: string; value: string }> = [];
-    if (taskIds.length === 1) rows.push({ label: "Task", value: taskIds[0] });
+    if (taskIds.length === 1) rows.push({ label: "任务", value: taskIds[0] });
     if (taskIds.length > 1)
-      rows.push({ label: "Tasks", value: taskIds.join(", ") });
+      rows.push({ label: "任务", value: taskIds.join(", ") });
     if (isAssign) {
       rows.push({
-        label: "Assignee",
-        value: assignedAgentId ?? "Unassigned",
+        label: "负责人",
+        value: assignedAgentId ?? "未分配",
       });
     }
-    if (title) rows.push({ label: "Title", value: title });
-    if (role) rows.push({ label: "Role", value: role });
+    if (title) rows.push({ label: "标题", value: title });
+    if (role) rows.push({ label: "角色", value: role });
     return rows;
   };
 
@@ -3047,7 +3047,7 @@ export default function BoardDetailPage() {
       if (!isSignedIn || !boardId) return;
       if (!canWrite) {
         pushToast(
-          "Read-only access. You do not have permission to update approvals.",
+          "只读访问，您没有更新审批的权限。",
         );
         return;
       }
@@ -3061,14 +3061,14 @@ export default function BoardDetailPage() {
             { status },
           );
         if (result.status !== 200) {
-          throw new Error("Unable to update approval.");
+          throw new Error("无法更新审批。");
         }
         const updated = normalizeApproval(result.data);
         setApprovals((prev) =>
           prev.map((item) => (item.id === approvalId ? updated : item)),
         );
       } catch (err) {
-        const message = formatActionError(err, "Unable to update approval.");
+        const message = formatActionError(err, "无法更新审批。");
         setApprovalsError(message);
         pushToast(message);
       } finally {
@@ -3088,7 +3088,7 @@ export default function BoardDetailPage() {
             forceRedirectUrl="/boards"
             signUpForceRedirectUrl="/boards"
           >
-            <Button>Sign in</Button>
+            <Button>登录</Button>
           </SignInButton>
         </div>
       </SignedOut>
@@ -3113,7 +3113,7 @@ export default function BoardDetailPage() {
                   {isBoardLeadProvisioning ? (
                     <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-800">
                       <RefreshCcw className="h-3.5 w-3.5 animate-spin" />
-                      <span>Provisioning board lead…</span>
+                      <span>准备主智能体中…</span>
                     </div>
                   ) : null}
                 </div>
@@ -3146,7 +3146,7 @@ export default function BoardDetailPage() {
                     onClick={() => setIsDialogOpen(true)}
                     className="h-9 w-9 p-0"
                     aria-label="New task"
-                    title={canWrite ? "New task" : "Read-only access"}
+                    title={canWrite ? "新建任务" : "只读访问"}
                     disabled={!canWrite}
                   >
                     <Plus className="h-4 w-4" />
@@ -3156,7 +3156,7 @@ export default function BoardDetailPage() {
                     onClick={() => router.push(`/boards/${boardId}/approvals`)}
                     className="relative h-9 w-9 p-0"
                     aria-label="Approvals"
-                    title="Approvals"
+                    title="审批"
                   >
                     <ShieldCheck className="h-4 w-4" />
                     {pendingApprovals.length > 0 ? (
@@ -3186,14 +3186,14 @@ export default function BoardDetailPage() {
                           : "",
                       )}
                       aria-label={
-                        isAgentsPaused ? "Resume agents" : "Pause agents"
+                        isAgentsPaused ? "恢复智能体" : "Pause agents"
                       }
                       title={
                         canWrite
                           ? isAgentsPaused
-                            ? "Resume agents"
+                            ? "恢复智能体"
                             : "Pause agents"
-                          : "Read-only access"
+                          : "只读访问"
                       }
                     >
                       {isAgentsPaused ? (
@@ -3208,7 +3208,7 @@ export default function BoardDetailPage() {
                     onClick={openBoardChat}
                     className="h-9 w-9 p-0"
                     aria-label="Board chat"
-                    title="Board chat"
+                    title="看板聊天"
                   >
                     <MessageSquare className="h-4 w-4" />
                   </Button>
@@ -3217,7 +3217,7 @@ export default function BoardDetailPage() {
                     onClick={openLiveFeed}
                     className="h-9 w-9 p-0"
                     aria-label="Live feed"
-                    title="Live feed"
+                    title="实时动态"
                   >
                     <Activity className="h-4 w-4" />
                   </Button>
@@ -3560,7 +3560,7 @@ export default function BoardDetailPage() {
                             size="sm"
                             onClick={() => setIsDialogOpen(true)}
                             disabled={isCreating || !canWrite}
-                            title={canWrite ? "New task" : "Read-only access"}
+                            title={canWrite ? "新建任务" : "只读访问"}
                           >
                             New task
                           </Button>
@@ -3590,7 +3590,7 @@ export default function BoardDetailPage() {
                                           .toString()
                                           .trim()
                                           .slice(0, 120)
-                                      : "No description"}
+                                      : "暂无描述"}
                                   </p>
                                 </div>
                                 <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
@@ -3700,7 +3700,7 @@ export default function BoardDetailPage() {
                 onClick={() => setIsEditDialogOpen(true)}
                 className="rounded-lg border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50"
                 disabled={!selectedTask || !canWrite}
-                title={canWrite ? "Edit task" : "Read-only access"}
+                title={canWrite ? "编辑任务" : "只读访问"}
               >
                 <Pencil className="h-4 w-4" />
               </button>
@@ -3818,18 +3818,18 @@ export default function BoardDetailPage() {
                     : selectedTaskResolvedDependencies;
                 const childrenMessage =
                   hasDependencies && selectedTask?.is_blocked
-                    ? "Blocked by incomplete dependencies."
+                    ? "被未完成的依赖项阻塞。"
                     : hasDependencies
-                      ? "Dependencies resolved."
+                      ? "依赖项已解决。"
                       : hasResolvedDependencies
-                        ? "This task resolves these tasks."
+                        ? "此任务解决了以下任务。"
                         : null;
 
                 return (
                   <DependencyBanner
                     dependencies={displayedDependencies}
                     variant={bannerVariant}
-                    emptyMessage="No dependencies."
+                    emptyMessage="暂无依赖项。"
                   >
                     {childrenMessage}
                   </DependencyBanner>
@@ -3912,7 +3912,7 @@ export default function BoardDetailPage() {
                             disabled={
                               approvalsUpdatingId === approval.id || !canWrite
                             }
-                            title={canWrite ? "Approve" : "Read-only access"}
+                            title={canWrite ? "审批" : "只读访问"}
                           >
                             Approve
                           </Button>
@@ -3925,7 +3925,7 @@ export default function BoardDetailPage() {
                             disabled={
                               approvalsUpdatingId === approval.id || !canWrite
                             }
-                            title={canWrite ? "Reject" : "Read-only access"}
+                            title={canWrite ? "拒绝" : "只读访问"}
                             className="border-slate-300 text-slate-700"
                           >
                             Reject
@@ -4045,7 +4045,7 @@ export default function BoardDetailPage() {
               mentionSuggestions={boardChatMentionSuggestions}
               placeholder={
                 canWrite
-                  ? "Message the board lead. Tag agents with @name."
+                  ? "向主智能体发送消息。用 @名称 提及智能体。"
                   : "Read-only access. Chat is disabled."
               }
             />
@@ -4119,7 +4119,7 @@ export default function BoardDetailPage() {
                           ? item.title
                           : taskId
                             ? (taskTitleById.get(taskId) ?? "Unknown task")
-                            : "Activity"
+                            : "活动记录"
                       }
                       authorName={authorName}
                       authorRole={authorRole}
@@ -4139,7 +4139,7 @@ export default function BoardDetailPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent aria-label="Edit task">
           <DialogHeader>
-            <DialogTitle>Edit task</DialogTitle>
+            <DialogTitle>编辑任务</DialogTitle>
             <DialogDescription>
               Update task details, priority, status, or assignment.
             </DialogDescription>
@@ -4278,12 +4278,12 @@ export default function BoardDetailPage() {
                 </button>
               </div>
               <DropdownSelect
-                ariaLabel="Add tag"
+                ariaLabel="添加标签"
                 placeholder="Add tag"
                 options={editTagOptions}
                 onValueChange={addEditTag}
                 disabled={!selectedTask || isSavingTask || !canWrite}
-                emptyMessage="No tags configured."
+                emptyMessage="暂无配置标签。"
               />
               {editTagIds.length === 0 ? (
                 <p className="text-xs text-slate-500">No tags assigned.</p>
@@ -4331,7 +4331,7 @@ export default function BoardDetailPage() {
                 Tasks stay blocked until every dependency is marked done.
               </p>
               <DropdownSelect
-                ariaLabel="Add dependency"
+                ariaLabel="添加依赖项"
                 placeholder="Add dependency"
                 options={dependencyOptions}
                 onValueChange={addTaskDependency}
@@ -4341,7 +4341,7 @@ export default function BoardDetailPage() {
                   selectedTask.status === "done" ||
                   !canWrite
                 }
-                emptyMessage="No other tasks found."
+                emptyMessage="未找到其他任务。"
               />
               {selectedTask?.status === "done" ? (
                 <p className="text-xs text-slate-500">
@@ -4409,7 +4409,7 @@ export default function BoardDetailPage() {
               onClick={() => setIsDeleteDialogOpen(true)}
               disabled={!selectedTask || isSavingTask || !canWrite}
               className="border-rose-200 text-rose-600 hover:border-rose-300 hover:text-rose-700"
-              title={canWrite ? "Delete task" : "Read-only access"}
+              title={canWrite ? "删除任务" : "只读访问"}
             >
               Delete task
             </Button>
@@ -4428,7 +4428,7 @@ export default function BoardDetailPage() {
                 !selectedTask || isSavingTask || !hasTaskChanges || !canWrite
               }
             >
-              {isSavingTask ? "Saving…" : "Save changes"}
+              {isSavingTask ? "保存中…" : "保存更改"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -4437,7 +4437,7 @@ export default function BoardDetailPage() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent aria-label="Delete task">
           <DialogHeader>
-            <DialogTitle>Delete task</DialogTitle>
+            <DialogTitle>删除任务</DialogTitle>
             <DialogDescription>
               This removes the task permanently. This action cannot be undone.
             </DialogDescription>
@@ -4460,7 +4460,7 @@ export default function BoardDetailPage() {
               disabled={isDeletingTask || !canWrite}
               className="bg-rose-600 text-white hover:bg-rose-700"
             >
-              {isDeletingTask ? "Deleting…" : "Delete task"}
+              {isDeletingTask ? "删除中…" : "删除任务"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -4477,7 +4477,7 @@ export default function BoardDetailPage() {
       >
         <DialogContent aria-label={titleLabel}>
           <DialogHeader>
-            <DialogTitle>New task</DialogTitle>
+            <DialogTitle>新建任务</DialogTitle>
             <DialogDescription>
               Add a task to the inbox and triage it when you are ready.
             </DialogDescription>
@@ -4560,12 +4560,12 @@ export default function BoardDetailPage() {
                 </button>
               </div>
               <DropdownSelect
-                ariaLabel="Add tag"
+                ariaLabel="添加标签"
                 placeholder="Add tag"
                 options={createTagOptions}
                 onValueChange={addCreateTag}
                 disabled={!canWrite || isCreating}
-                emptyMessage="No tags configured."
+                emptyMessage="暂无配置标签。"
               />
               {createTagIds.length ? (
                 <div className="flex flex-wrap gap-2">
@@ -4613,7 +4613,7 @@ export default function BoardDetailPage() {
               onClick={handleCreateTask}
               disabled={!canWrite || isCreating}
             >
-              {isCreating ? "Creating…" : "Create task"}
+              {isCreating ? "创建中…" : "创建任务"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -4634,7 +4634,7 @@ export default function BoardDetailPage() {
               <DialogTitle>
                 {agentsControlAction === "pause"
                   ? "Pause agents"
-                  : "Resume agents"}
+                  : "恢复智能体"}
               </DialogTitle>
               <DialogDescription>
                 {agentsControlAction === "pause"
@@ -4660,7 +4660,7 @@ export default function BoardDetailPage() {
                   to board chat.
                 </li>
                 <li>
-                  Mission Control forwards it to all agents on this board.
+                  任务控制台将消息转发给看板上的所有智能体。
                 </li>
               </ul>
             </div>
@@ -4678,10 +4678,10 @@ export default function BoardDetailPage() {
                 disabled={isAgentsControlSending}
               >
                 {isAgentsControlSending
-                  ? "Sending…"
+                  ? "发送中…"
                   : agentsControlAction === "pause"
                     ? "Pause agents"
-                    : "Resume agents"}
+                    : "恢复智能体"}
               </Button>
             </DialogFooter>
           </DialogContent>

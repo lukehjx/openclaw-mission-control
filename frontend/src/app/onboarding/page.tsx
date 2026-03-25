@@ -53,7 +53,7 @@ export default function OnboardingPage() {
         router.replace("/dashboard");
       },
       onError: (err) => {
-        setError(err.message || "Something went wrong.");
+        setError(err.message || "出错了。");
       },
     },
   });
@@ -94,7 +94,7 @@ export default function OnboardingPage() {
     event.preventDefault();
     if (!isSignedIn) return;
     if (requiredMissing) {
-      setError("Please complete the required fields.");
+      setError("请填写必填字段。");
       return;
     }
     setError(null);
@@ -118,10 +118,10 @@ export default function OnboardingPage() {
           <div className="w-full max-w-2xl rounded-xl border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-100 px-6 py-5">
               <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-                Mission Control profile
+                任务控制台个人资料
               </h1>
               <p className="mt-1 text-sm text-slate-600">
-                Sign in to configure your profile and timezone.
+                登录后配置您的个人资料和时区。
               </p>
             </div>
             <div className="px-6 py-6">
@@ -130,7 +130,7 @@ export default function OnboardingPage() {
                 forceRedirectUrl="/onboarding"
                 signUpForceRedirectUrl="/onboarding"
               >
-                <Button size="lg">Sign in</Button>
+                <Button size="lg">登录</Button>
               </SignInButton>
             </div>
           </div>
@@ -141,10 +141,10 @@ export default function OnboardingPage() {
           <section className="w-full max-w-2xl rounded-xl border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-100 px-6 py-5">
               <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-                Mission Control profile
+                任务控制台个人资料
               </h1>
               <p className="mt-1 text-sm text-slate-600">
-                Configure your mission control settings and preferences.
+                配置您的任务控制台设置和偏好。
               </p>
             </div>
             <div className="px-6 py-6">
@@ -159,7 +159,7 @@ export default function OnboardingPage() {
                     <Input
                       value={resolvedName}
                       onChange={(event) => setName(event.target.value)}
-                      placeholder="Enter your name"
+                      placeholder="请输入您的姓名"
                       disabled={isLoading}
                       className="border-slate-300 text-slate-900 focus-visible:ring-blue-500"
                     />
@@ -171,13 +171,13 @@ export default function OnboardingPage() {
                       <span className="text-red-500">*</span>
                     </label>
                     <SearchableSelect
-                      ariaLabel="Select timezone"
+                      ariaLabel="选择时区"
                       value={resolvedTimezone}
                       onValueChange={setTimezone}
                       options={timezoneOptions}
-                      placeholder="Select timezone"
-                      searchPlaceholder="Search timezones..."
-                      emptyMessage="No matching timezones."
+                      placeholder="选择时区"
+                      searchPlaceholder="搜索时区..."
+                      emptyMessage="未找到匹配时区。"
                       triggerClassName="w-full h-11 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                       contentClassName="rounded-xl border border-slate-200 shadow-lg"
                       itemClassName="px-4 py-3 text-sm text-slate-700 data-[selected=true]:bg-slate-50 data-[selected=true]:text-slate-900"
@@ -188,8 +188,8 @@ export default function OnboardingPage() {
                 <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 flex items-start gap-3">
                   <Info className="mt-0.5 h-4 w-4 text-blue-600" />
                   <p>
-                    <strong>Note:</strong> Your timezone is used to display all
-                    timestamps and schedule mission-critical events accurately.
+                    <strong>Note:</strong> 您的时区用于准确显示所有
+                    时间戳和安排关键任务事件。
                   </p>
                 </div>
 
@@ -206,7 +206,7 @@ export default function OnboardingPage() {
                     disabled={isLoading || requiredMissing}
                   >
                     <Save className="h-4 w-4" />
-                    {isLoading ? "Saving…" : "Save Profile"}
+                    {isLoading ? "保存中…" : "保存资料"}
                   </Button>
                   <button
                     type="button"

@@ -9,7 +9,7 @@ export function BrandMark() {
           OPENCLAW
         </div>
         <div className="text-[11px] font-medium text-quiet">
-          Mission Control
+          任务控制台
         </div>
       </div>
     </div>

@@ -49,7 +49,7 @@ const columns: Array<{
   badge: string;
 }> = [
   {
-    title: "Inbox",
+    title: "收件箱",
     status: "inbox",
     dot: "bg-slate-400",
     accent: "hover:border-slate-400 hover:bg-slate-50",
@@ -57,7 +57,7 @@ const columns: Array<{
     badge: "bg-slate-100 text-slate-600",
   },
   {
-    title: "In Progress",
+    title: "进行中",
     status: "in_progress",
     dot: "bg-purple-500",
     accent: "hover:border-purple-400 hover:bg-purple-50",
@@ -65,7 +65,7 @@ const columns: Array<{
     badge: "bg-purple-100 text-purple-700",
   },
   {
-    title: "Review",
+    title: "待审核",
     status: "review",
     dot: "bg-indigo-500",
     accent: "hover:border-indigo-400 hover:bg-indigo-50",
@@ -73,7 +73,7 @@ const columns: Array<{
     badge: "bg-indigo-100 text-indigo-700",
   },
   {
-    title: "Done",
+    title: "已完成",
     status: "done",
     dot: "bg-green-500",
     accent: "hover:border-green-400 hover:bg-green-50",
@@ -103,7 +103,7 @@ const resolveDueState = (
 
   const isOverdue = task.status !== "done" && date.getTime() < Date.now();
   return {
-    due: isOverdue ? `Overdue · ${dueLabel}` : dueLabel,
+    due: isOverdue ? `逾期 · ${dueLabel}` : dueLabel,
     isOverdue,
   };
 };
@@ -451,20 +451,20 @@ export const TaskBoard = memo(function TaskBoard({
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
                   {(
                     [
-                      { key: "all", label: "All", count: reviewCounts.all },
+                      { key: "all", label: "全部", count: reviewCounts.all },
                       {
                         key: "approval_needed",
-                        label: "Approval needed",
+                        label: "需要审批",
                         count: reviewCounts.approval_needed,
                       },
                       {
                         key: "waiting_lead",
-                        label: "Lead review",
+                        label: "主智能体审阅",
                         count: reviewCounts.waiting_lead,
                       },
                       {
                         key: "blocked",
-                        label: "Blocked",
+                        label: "被阻塞",
                         count: reviewCounts.blocked,
                       },
                     ] as const

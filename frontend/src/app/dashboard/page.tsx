@@ -711,16 +711,16 @@ export default function DashboardPage() {
   const activeSessions = Math.max(countedSessions, sessionSummaries.length);
 
   const gatewayStatusLabel = !hasConfiguredGateways
-    ? "Not configured"
+    ? "未配置"
     : gatewayStatusesQuery.isLoading
-      ? "Checking"
+      ? "检查中"
       : gatewayConnectedCount === gatewayTargets.length
-        ? "All connected"
+        ? "全部已连接"
         : gatewayConnectedCount > 0
-          ? "Partially connected"
+          ? "部分已连接"
           : gatewayUnavailableCount === gatewayTargets.length
-            ? "Unavailable"
-            : "Disconnected";
+            ? "不可用"
+            : "未连接";
   const gatewayBadgeTone: "online" | "offline" | "neutral" =
     gatewayStatusLabel === "All connected"
       ? "online"
@@ -740,24 +740,24 @@ export default function DashboardPage() {
 
   const workloadRows: SummaryRow[] = [
     {
-      label: "Total work items",
+      label: "总工作项",
       value: formatCount(tasksTotal),
     },
     {
-      label: "Inbox",
+      label: "收件箱",
       value: formatCount(inboxTasksMetric),
     },
     {
-      label: "In progress",
+      label: "进行中",
       value: formatCount(inProgressTasksMetric),
       tone: inProgressTasksMetric > 0 ? "warning" : "default",
     },
     {
-      label: "In review",
+      label: "待审核",
       value: formatCount(reviewTasksMetric),
     },
     {
-      label: "Completed",
+      label: "已完成",
       value: formatCount(doneTasksMetric),
       tone: doneTasksMetric > 0 ? "success" : "default",
     },
@@ -765,22 +765,22 @@ export default function DashboardPage() {
 
   const throughputRows: SummaryRow[] = [
     {
-      label: "Completed tasks",
+      label: "已完成任务",
       value: formatCount(throughputTotal),
     },
-    { label: "Average throughput", value: formatPerDay(throughputTotal, DASHBOARD_RANGE_DAYS) },
+    { label: "平均吞吐量", value: formatPerDay(throughputTotal, DASHBOARD_RANGE_DAYS) },
     {
-      label: "Error rate",
+      label: "错误率",
       value: formatPercent(errorRateMetric),
       tone: errorRateMetric > 0 ? "warning" : "success",
     },
     {
-      label: "Completion consistency",
-      value: `${formatCount(completionDaysCount)} active days`,
+      label: "完成一致性",
+      value: `${formatCount(completionDaysCount)} 个活跃天`,
       tone: completionDaysCount >= Math.ceil(DASHBOARD_RANGE_DAYS * 0.75) ? "success" : "default",
     },
     {
-      label: "Review backlog ratio",
+      label: "待审核积压比",
       value:
         reviewBacklogRatio !== null
           ? `${reviewBacklogRatio.toFixed(2)}x`
@@ -799,20 +799,20 @@ export default function DashboardPage() {
   ];
 
   const gatewayRows: SummaryRow[] = [
-    { label: "Gateway status", value: gatewayStatusLabel, tone: gatewayStatusTone },
-    { label: "Configured gateways", value: formatCount(gatewayTargets.length) },
+    { label: "网关状态", value: gatewayStatusLabel, tone: gatewayStatusTone },
+    { label: "已配置网关", value: formatCount(gatewayTargets.length) },
     {
-      label: "Connected gateways",
+      label: "已连接网关",
       value: formatCount(gatewayConnectedCount),
       tone: gatewayConnectedCount > 0 ? "success" : "default",
     },
     {
-      label: "Unavailable gateways",
+      label: "不可用网关",
       value: formatCount(gatewayUnavailableCount),
       tone: gatewayUnavailableCount > 0 ? "danger" : "default",
     },
     {
-      label: "Gateways with issues",
+      label: "故障网关",
       value: formatCount(gatewayHealthErrorCount + gatewayDisconnectedCount),
       tone: gatewayHealthErrorCount + gatewayDisconnectedCount > 0 ? "warning" : "success",
     },
@@ -893,7 +893,7 @@ export default function DashboardPage() {
     <DashboardShell>
       <SignedOut>
         <SignedOutPanel
-          message="Sign in to access the dashboard."
+          message="登录后方可访问控制台。"
           forceRedirectUrl="/onboarding"
           signUpForceRedirectUrl="/onboarding"
         />
@@ -904,37 +904,37 @@ export default function DashboardPage() {
           <div className="p-4 md:p-8">
             {metricsQuery.error ? (
               <div className="mb-4 rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm text-rose-700">
-                Load failed: {metricsQuery.error.message}
+                加载失败：{metricsQuery.error.message}
               </div>
             ) : null}
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
               <TopMetricCard
-                title="Online Agents"
+                title="在线智能体"
                 value={formatCount(activeAgentsMetric)}
-                secondary={`${formatCount(agents.length)} total`}
+                secondary={`共 ${formatCount(agents.length)} 个`}
                 icon={<Bot className="h-4 w-4" />}
                 accent="blue"
               />
               <TopMetricCard
-                title="Tasks In Progress"
+                title="进行中任务"
                 value={formatCount(tasksInProgressMetric)}
-                secondary={`${formatCount(tasksTotal)} total`}
+                secondary={`共 ${formatCount(tasksTotal)} 个`}
                 icon={<LayoutGrid className="h-4 w-4" />}
                 accent="green"
               />
               <TopMetricCard
-                title="Error Rate"
+                title="错误率"
                 value={formatPercent(errorRateMetric)}
-                secondary={`${formatCount(Number(latestThroughputPoint?.value ?? 0))} completed (latest)`}
+                secondary={`最新完成：${formatCount(Number(latestThroughputPoint?.value ?? 0))} 个`}
                 icon={<Activity className="h-4 w-4" />}
                 accent="violet"
               />
               <TopMetricCard
-                title="Completion Speed"
+                title="完成速度"
                 value={formatPerDay(throughputTotal, DASHBOARD_RANGE_DAYS)}
-                secondary={`${formatCount(throughputTotal)} completed`}
-                infoText={`Based on ${DASHBOARD_RANGE_LABEL}`}
+                secondary={`共完成 ${formatCount(throughputTotal)} 个`}
+                infoText={`基于最近 ${DASHBOARD_RANGE_LABEL}`}
                 icon={<Timer className="h-4 w-4" />}
                 accent="emerald"
               />
@@ -942,16 +942,16 @@ export default function DashboardPage() {
 
             <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
               <InfoBlock
-                title="Workload"
+                title="工作负载"
                 rows={workloadRows}
               />
               <InfoBlock
-                title="Throughput"
-                infoText={`All throughput values are calculated for ${DASHBOARD_RANGE_LABEL}`}
+                title="吞吐量"
+                infoText={`所有吞吐量数据均基于最近 ${DASHBOARD_RANGE_LABEL} 计算`}
                 rows={throughputRows}
               />
               <InfoBlock
-                title="Gateway Health"
+                title="网关健康状态"
                 badge={{
                   text: gatewayStatusLabel,
                   tone: gatewayBadgeTone,
@@ -962,23 +962,23 @@ export default function DashboardPage() {
 
             <section className="mt-4 rounded-xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <h3 className="text-lg font-semibold text-slate-900">Pending Approvals</h3>
+                <h3 className="text-lg font-semibold text-slate-900">待处理审批</h3>
                 <Link
                   href="/approvals"
                   className="inline-flex items-center gap-1 text-xs text-slate-500 transition hover:text-slate-700"
                 >
-                  Open global approvals
+                  查看全局审批
                   <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
 
               {!metrics && metricsQuery.isLoading ? (
                 <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
-                  Loading pending approvals...
+                  加载审批中...
                 </div>
               ) : !metrics && metricsQuery.error ? (
                 <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
-                  Pending approvals are temporarily unavailable.
+                  待处理审批暂时不可用。
                 </div>
               ) : hasPendingApprovals ? (
                 <div className="space-y-2">
@@ -991,10 +991,10 @@ export default function DashboardPage() {
                       >
                         <span className="min-w-0 text-sm text-slate-700">
                           <span className="block truncate font-medium text-slate-800">
-                            {item.task_title || "Pending approval"}
+                            {item.task_title || "待处理审批"}
                           </span>
                           <span className="block truncate text-xs text-slate-500">
-                            {item.board_name} · {item.confidence}% score
+                            {item.board_name} · {item.confidence}% 置信度
                           </span>
                         </span>
                         <span className="shrink-0 text-xs text-slate-500">
@@ -1005,14 +1005,13 @@ export default function DashboardPage() {
                   </div>
                   {pendingApprovalsTotal > pendingApprovalItems.length ? (
                     <p className="text-xs text-slate-500">
-                      Showing latest {formatCount(pendingApprovalItems.length)} of{" "}
-                      {formatCount(pendingApprovalsTotal)} pending approvals.
+                      显示最新 {formatCount(pendingApprovalItems.length)} / 共 {formatCount(pendingApprovalsTotal)} 个待处理审批。
                     </p>
                   ) : null}
                 </div>
               ) : (
                 <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
-                  No pending approvals across your boards.
+                  所有看板均无待处理审批。
                 </div>
               )}
             </section>
@@ -1020,25 +1019,25 @@ export default function DashboardPage() {
             <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-lg font-semibold text-slate-900">Sessions</h3>
+                  <h3 className="text-lg font-semibold text-slate-900">会话</h3>
                   <span className="text-xs text-slate-500">{formatCount(activeSessions)}</span>
                 </div>
                 <div className="max-h-[310px] space-y-2 overflow-x-hidden overflow-y-auto pr-1">
                   {!hasConfiguredGateways ? (
                     <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
-                      No gateways are configured for any board yet.
+                      尚未为任何看板配置网关。
                     </div>
                   ) : gatewayStatusesQuery.isLoading ? (
                     <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
-                      Loading sessions...
+                      加载会话中...
                     </div>
                   ) : sessionSummaries.length > 0 ? (
                     <>
                       {gatewayUnavailableCount > 0 ? (
                         <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
-                          {formatCount(gatewayUnavailableCount)} gateway
-                          {gatewayUnavailableCount === 1 ? "" : "s"} unavailable; showing sessions
-                          from reachable gateways.
+                          {formatCount(gatewayUnavailableCount)} 个网关
+                          {gatewayUnavailableCount === 1 ? "" : "s"} 不可用；显示来自可达网关的会话。
+                          
                         </div>
                       ) : null}
                       {sessionSummaries.map((session) => (
@@ -1060,12 +1059,12 @@ export default function DashboardPage() {
                             </div>
                             <div className="min-w-0 max-w-[45%] text-right">
                               <p className="truncate text-xs font-medium text-slate-700">
-                                {session.usage === DASH ? "Usage unavailable" : session.usage}
+                                {session.usage === DASH ? "用量不可用" : session.usage}
                               </p>
                               <p className="text-[11px] text-slate-500">
                                 {session.lastSeenAt
                                   ? formatRelativeTimestamp(session.lastSeenAt)
-                                  : "Activity unavailable"}
+                                  : "活动不可用"}
                               </p>
                             </div>
                           </div>
@@ -1074,11 +1073,11 @@ export default function DashboardPage() {
                     </>
                   ) : gatewayUnavailableCount === gatewayTargets.length ? (
                     <div className="rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm text-rose-700">
-                      Session data is unavailable for all configured gateways.
+                      所有已配置网关的会话数据均不可用。
                     </div>
                   ) : (
                     <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
-                      No active sessions detected.
+                      未检测到活跃会话。
                     </div>
                   )}
                 </div>
@@ -1086,12 +1085,12 @@ export default function DashboardPage() {
 
               <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-lg font-semibold text-slate-900">Recent Activity</h3>
+                  <h3 className="text-lg font-semibold text-slate-900">最近活动</h3>
                   <Link
                     href={activityFeedHref}
                     className="inline-flex items-center gap-1 text-xs text-slate-500 transition hover:text-slate-700"
                   >
-                    Open feed
+                    查看动态
                     <ArrowUpRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
@@ -1104,7 +1103,7 @@ export default function DashboardPage() {
                           key={event.id}
                           role="link"
                           tabIndex={0}
-                        aria-label={`Open related context for ${event.event_type} activity`}
+                        aria-label={`打开 ${event.event_type} 活动的相关上下文`}
                           onClick={(interactionEvent) =>
                             handleLogRowClick(interactionEvent, eventHref)
                           }
@@ -1136,8 +1135,8 @@ export default function DashboardPage() {
                   ) : (
                     <div className="flex h-[240px] flex-col items-center justify-center rounded-lg border border-slate-200 bg-white text-sm text-slate-500">
                       <Shield className="mb-2 h-5 w-5 text-slate-400" />
-                      No activity yet
-                      <p className="mt-1 text-xs text-slate-500">Activity appears here when events are emitted.</p>
+                      暂无活动
+                      <p className="mt-1 text-xs text-slate-500">事件触发后将显示在此处。</p>
                     </div>
                   )}
                 </div>

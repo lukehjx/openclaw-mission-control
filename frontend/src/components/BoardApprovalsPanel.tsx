@@ -338,7 +338,7 @@ const approvalRelatedTasks = (approval: Approval): RelatedTaskSummary[] => {
       titleByTaskId.get(taskId) ??
       indexedTitles[index] ??
       (taskIds.length === 1 ? singleTitle : null) ??
-      "Untitled task";
+      "无标题任务";
     return { id: taskId, title: resolvedTitle };
   });
 };
@@ -375,18 +375,18 @@ const approvalSummary = (approval: Approval, boardLabel?: string | null) => {
   const role = payloadValue(payload, "role");
   const isAssign = approval.action_type.includes("assign");
   const rows: Array<{ label: string; value: string }> = [];
-  if (boardLabel) rows.push({ label: "Board", value: boardLabel });
-  if (taskIds.length === 1) rows.push({ label: "Task", value: taskIds[0] });
+  if (boardLabel) rows.push({ label: "看板", value: boardLabel });
+  if (taskIds.length === 1) rows.push({ label: "任务", value: taskIds[0] });
   if (taskIds.length > 1)
-    rows.push({ label: "Tasks", value: taskIds.join(", ") });
+    rows.push({ label: "任务", value: taskIds.join(", ") });
   if (isAssign) {
     rows.push({
-      label: "Assignee",
-      value: assignedAgentId ?? "Unassigned",
+      label: "负责人",
+      value: assignedAgentId ?? "未分配",
     });
   }
-  if (title) rows.push({ label: "Title", value: title });
-  if (role) rows.push({ label: "Role", value: role });
+  if (title) rows.push({ label: "标题", value: title });
+  if (role) rows.push({ label: "角色", value: role });
   return { taskId, reason, rows, description };
 };
 
@@ -486,7 +486,7 @@ export function BoardApprovalsPanel({
             );
           },
           onError: (err) => {
-            setError(err.message || "Unable to update approval.");
+            setError(err.message || "无法更新审批。");
           },
           onSettled: () => {
             setUpdatingId(null);
@@ -680,8 +680,8 @@ export function BoardApprovalsPanel({
             <div className="border-b border-slate-200 bg-slate-50 px-4 py-3">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                 {selectedApproval?.status === "pending"
-                  ? "Latest unapproved task"
-                  : "Approval detail"}
+                  ? "最新待审批任务"
+                  : "审批详情"}
               </p>
             </div>
             {!selectedApproval ? (
@@ -814,8 +814,8 @@ export function BoardApprovalsPanel({
                         <p className="text-sm font-medium text-slate-700">
                           {formatStatusLabel(selectedApproval.status)} ·{" "}
                           {selectedApproval.status === "pending"
-                            ? "Awaiting your decision"
-                            : "Decision complete"}
+                            ? "等待您的决定"
+                            : "决定已完成"}
                         </p>
                       </div>
                     </div>

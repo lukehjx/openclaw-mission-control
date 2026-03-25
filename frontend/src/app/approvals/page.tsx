@@ -9,22 +9,22 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import type { ApiError } from "@/api/mutator";
 import {
-  listApprovalsApiV1BoardsBoardIdApprovalsGet,
-  updateApprovalApiV1BoardsBoardIdApprovalsApprovalIdPatch,
+  list审批ApiV1BoardsBoardId审批Get,
+  updateApprovalApiV1BoardsBoardId审批ApprovalIdPatch,
 } from "@/api/generated/approvals/approvals";
 import { useListBoardsApiV1BoardsGet } from "@/api/generated/boards/boards";
 import type { ApprovalRead, BoardRead } from "@/api/generated/model";
-import { BoardApprovalsPanel } from "@/components/BoardApprovalsPanel";
+import { Board审批Panel } from "@/components/Board审批Panel";
 import { DashboardSidebar } from "@/components/organisms/DashboardSidebar";
 import { DashboardShell } from "@/components/templates/DashboardShell";
 import { Button } from "@/components/ui/button";
 
-type GlobalApprovalsData = {
+type Global审批Data = {
   approvals: ApprovalRead[];
   warnings: string[];
 };
 
-function GlobalApprovalsInner() {
+function Global审批Inner() {
   const { isSignedIn } = useAuth();
   const queryClient = useQueryClient();
 
@@ -59,7 +59,7 @@ function GlobalApprovalsInner() {
     [boardIdsKey],
   );
 
-  const approvalsQuery = useQuery<GlobalApprovalsData, ApiError>({
+  const approvalsQuery = useQuery<Global审批Data, ApiError>({
     queryKey: approvalsKey,
     enabled: Boolean(isSignedIn && boards.length > 0),
     refetchInterval: 15_000,
@@ -68,7 +68,7 @@ function GlobalApprovalsInner() {
     queryFn: async () => {
       const results = await Promise.allSettled(
         boards.map(async (board) => {
-          const response = await listApprovalsApiV1BoardsBoardIdApprovalsGet(
+          const response = await list审批ApiV1BoardsBoardId审批Get(
             board.id,
             { limit: 200 },
             { cache: "no-store" },
@@ -100,14 +100,14 @@ function GlobalApprovalsInner() {
   const updateApprovalMutation = useMutation<
     Awaited<
       ReturnType<
-        typeof updateApprovalApiV1BoardsBoardIdApprovalsApprovalIdPatch
+        typeof updateApprovalApiV1BoardsBoardId审批ApprovalIdPatch
       >
     >,
     ApiError,
     { boardId: string; approvalId: string; status: "approved" | "rejected" }
   >({
     mutationFn: ({ boardId, approvalId, status }) =>
-      updateApprovalApiV1BoardsBoardIdApprovalsApprovalIdPatch(
+      updateApprovalApiV1BoardsBoardId审批ApprovalIdPatch(
         boardId,
         approvalId,
         { status },
@@ -136,7 +136,7 @@ function GlobalApprovalsInner() {
         {
           onSuccess: (result) => {
             if (result.status !== 200) return;
-            queryClient.setQueryData<GlobalApprovalsData>(
+            queryClient.setQueryData<Global审批Data>(
               approvalsKey,
               (prev) => {
                 if (!prev) return prev;
@@ -169,7 +169,7 @@ function GlobalApprovalsInner() {
     <main className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="p-4 md:p-6">
         <div className="h-[calc(100vh-160px)] min-h-[300px] sm:min-h-[520px]">
-          <BoardApprovalsPanel
+          <Board审批Panel
             boardId="global"
             approvals={approvals}
             isLoading={boardsQuery.isLoading || approvalsQuery.isLoading}
@@ -184,12 +184,12 @@ function GlobalApprovalsInner() {
   );
 }
 
-export default function GlobalApprovalsPage() {
+export default function Global审批Page() {
   return (
     <DashboardShell>
       <SignedOut>
         <div className="flex h-full flex-col items-center justify-center gap-4 rounded-2xl surface-panel p-10 text-center">
-          <p className="text-sm text-muted">Sign in to view approvals.</p>
+          <p className="text-sm text-muted">登录后方可查看审批。</p>
           <SignInButton
             mode="modal"
             forceRedirectUrl="/approvals"
@@ -201,7 +201,7 @@ export default function GlobalApprovalsPage() {
       </SignedOut>
       <SignedIn>
         <DashboardSidebar />
-        <GlobalApprovalsInner />
+        <Global审批Inner />
       </SignedIn>
     </DashboardShell>
   );

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/auth/clerk";
 
 import { ApiError } from "@/api/mutator";
-import { useCreateBoardApiV1BoardsPost } from "@/api/generated/boards/boards";
+import { use创建BoardApiV1BoardsPost } from "@/api/generated/boards/boards";
 import {
   type listBoardGroupsApiV1BoardGroupsGetResponse,
   useListBoardGroupsApiV1BoardGroupsGet,
@@ -40,7 +40,7 @@ export default function NewBoardPage() {
   const { isAdmin } = useOrganizationMembership(isSignedIn);
 
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [description, set描述] = useState("");
   const [gatewayId, setGatewayId] = useState<string>("");
   const [boardGroupId, setBoardGroupId] = useState<string>("none");
 
@@ -68,7 +68,7 @@ export default function NewBoardPage() {
     },
   });
 
-  const createBoardMutation = useCreateBoardApiV1BoardsPost<ApiError>({
+  const createBoardMutation = use创建BoardApiV1BoardsPost<ApiError>({
     mutation: {
       onSuccess: (result) => {
         if (result.status === 200) {
@@ -121,15 +121,15 @@ export default function NewBoardPage() {
     const trimmedName = name.trim();
     const resolvedGatewayId = displayGatewayId;
     if (!trimmedName) {
-      setError("Board name is required.");
+      setError("看板名称 is required.");
       return;
     }
     if (!resolvedGatewayId) {
       setError("Select a gateway before creating a board.");
       return;
     }
-    const trimmedDescription = description.trim();
-    if (!trimmedDescription) {
+    const trimmed描述 = description.trim();
+    if (!trimmed描述) {
       setError("Board description is required.");
       return;
     }
@@ -140,7 +140,7 @@ export default function NewBoardPage() {
       data: {
         name: trimmedName,
         slug: slugify(trimmedName),
-        description: trimmedDescription,
+        description: trimmed描述,
         gateway_id: resolvedGatewayId,
         board_group_id: boardGroupId === "none" ? null : boardGroupId,
       },
@@ -150,11 +150,11 @@ export default function NewBoardPage() {
   return (
     <DashboardPageLayout
       signedOut={{
-        message: "Sign in to create a board.",
+        message: "登录后方可创建看板。",
         forceRedirectUrl: "/boards/new",
         signUpForceRedirectUrl: "/boards/new",
       }}
-      title="Create board"
+      title="创建看板"
       description="Boards organize tasks and agents by mission context."
       isAdmin={isAdmin}
       adminOnlyMessage="Only organization owners and admins can create boards."
@@ -167,7 +167,7 @@ export default function NewBoardPage() {
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-900">
-                Board name <span className="text-red-500">*</span>
+                看板名称 <span className="text-red-500">*</span>
               </label>
               <Input
                 value={name}
@@ -214,18 +214,18 @@ export default function NewBoardPage() {
                 disabled={isLoading}
               />
               <p className="text-xs text-slate-500">
-                Optional. Groups increase cross-board visibility.
+                可选. Groups increase cross-board visibility.
               </p>
             </div>
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-900">
-              Description <span className="text-red-500">*</span>
+              描述 <span className="text-red-500">*</span>
             </label>
             <Textarea
               value={description}
-              onChange={(event) => setDescription(event.target.value)}
+              onChange={(event) => set描述(event.target.value)}
               placeholder="What context should the lead agent know before onboarding?"
               className="min-h-[120px]"
               disabled={isLoading}
@@ -236,7 +236,7 @@ export default function NewBoardPage() {
         {gateways.length === 0 ? (
           <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
             <p>
-              No gateways available. Create one in{" "}
+              No gateways available. 创建 one in{" "}
               <Link
                 href="/gateways"
                 className="font-medium text-blue-600 hover:text-blue-700"
@@ -259,10 +259,10 @@ export default function NewBoardPage() {
             onClick={() => router.push("/boards")}
             disabled={isLoading}
           >
-            Cancel
+            取消
           </Button>
           <Button type="submit" disabled={isLoading || !isFormReady}>
-            {isLoading ? "Creating…" : "Create board"}
+            {isLoading ? "创建中…" : "创建看板"}
           </Button>
         </div>
       </form>

@@ -13,15 +13,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { usePageActive } from "@/hooks/usePageActive";
 
 import {
-  answerOnboardingApiV1BoardsBoardIdOnboardingAnswerPost,
-  confirmOnboardingApiV1BoardsBoardIdOnboardingConfirmPost,
-  getOnboardingApiV1BoardsBoardIdOnboardingGet,
-  startOnboardingApiV1BoardsBoardIdOnboardingStartPost,
+  answer初始化配置ApiV1BoardsBoardId初始化配置AnswerPost,
+  confirm初始化配置ApiV1BoardsBoardId初始化配置ConfirmPost,
+  get初始化配置ApiV1BoardsBoardId初始化配置Get,
+  start初始化配置ApiV1BoardsBoardId初始化配置StartPost,
 } from "@/api/generated/board-onboarding/board-onboarding";
 import type {
-  BoardOnboardingAgentComplete,
-  BoardOnboardingRead,
-  BoardOnboardingReadMessages,
+  Board初始化配置Agent完成,
+  Board初始化配置Read,
+  Board初始化配置ReadMessages,
   BoardRead,
 } from "@/api/generated/model";
 
@@ -37,7 +37,7 @@ type NormalizedMessage = {
  * or malformed entries.
  */
 const normalizeMessages = (
-  value?: BoardOnboardingReadMessages,
+  value?: Board初始化配置ReadMessages,
 ): NormalizedMessage[] | null => {
   if (!value) return null;
   if (!Array.isArray(value)) return null;
@@ -133,7 +133,7 @@ const parseQuestion = (messages?: NormalizedMessage[] | null) => {
   return null;
 };
 
-export function BoardOnboardingChat({
+export function Board初始化配置Chat({
   boardId,
   onConfirmed,
 }: {
@@ -141,7 +141,7 @@ export function BoardOnboardingChat({
   onConfirmed: (board: BoardRead) => void;
 }) {
   const isPageActive = usePageActive();
-  const [session, setSession] = useState<BoardOnboardingRead | null>(null);
+  const [session, setSession] = useState<Board初始化配置Read | null>(null);
   const [loading, setLoading] = useState(false);
   const [awaitingAssistantFingerprint, setAwaitingAssistantFingerprint] =
     useState<string | null>(null);
@@ -181,7 +181,7 @@ export function BoardOnboardingChat({
     () => parseQuestion(normalizedMessages),
     [normalizedMessages],
   );
-  const draft: BoardOnboardingAgentComplete | null =
+  const draft: Board初始化配置Agent完成 | null =
     session?.draft_goal ?? null;
 
   const isAwaitingAgent = useMemo(() => {
@@ -217,7 +217,7 @@ export function BoardOnboardingChat({
     setLoading(true);
     setError(null);
     try {
-      const result = await startOnboardingApiV1BoardsBoardIdOnboardingStartPost(
+      const result = await start初始化配置ApiV1BoardsBoardId初始化配置StartPost(
         boardId,
         {},
       );
@@ -235,7 +235,7 @@ export function BoardOnboardingChat({
   const refreshSession = useCallback(async () => {
     try {
       const result =
-        await getOnboardingApiV1BoardsBoardIdOnboardingGet(boardId);
+        await get初始化配置ApiV1BoardsBoardId初始化配置Get(boardId);
       if (result.status !== 200) return;
       setSession(result.data);
     } catch {
@@ -269,7 +269,7 @@ export function BoardOnboardingChat({
       setLastSubmittedAnswer(null);
       try {
         const result =
-          await answerOnboardingApiV1BoardsBoardIdOnboardingAnswerPost(
+          await answer初始化配置ApiV1BoardsBoardId初始化配置AnswerPost(
             boardId,
             {
               answer: value,
@@ -313,7 +313,7 @@ export function BoardOnboardingChat({
     setLastSubmittedAnswer(null);
     try {
       const result =
-        await answerOnboardingApiV1BoardsBoardIdOnboardingAnswerPost(boardId, {
+        await answer初始化配置ApiV1BoardsBoardId初始化配置AnswerPost(boardId, {
           answer: "Additional context",
           other_text: trimmed,
         });
@@ -357,7 +357,7 @@ export function BoardOnboardingChat({
     setError(null);
     try {
       const result =
-        await confirmOnboardingApiV1BoardsBoardIdOnboardingConfirmPost(
+        await confirm初始化配置ApiV1BoardsBoardId初始化配置ConfirmPost(
           boardId,
           {
             board_type: draft.board_type ?? "goal",
@@ -628,7 +628,7 @@ export function BoardOnboardingChat({
                 (wantsFreeText && !otherText.trim())
               }
             >
-              {loading ? "Sending..." : isAwaitingAgent ? "Waiting..." : "Next"}
+              {loading ? "Sending..." : isAwaitingAgent ? "Waiting..." : "下一步"}
             </Button>
             {loading ? (
               <p className="text-xs text-slate-500">Sending your answer…</p>

@@ -113,12 +113,12 @@ export default function BoardsPage() {
     <>
       <DashboardPageLayout
         signedOut={{
-          message: "Sign in to view boards.",
+          message: "登录后方可查看看板。",
           forceRedirectUrl: "/boards",
           signUpForceRedirectUrl: "/boards",
         }}
-        title="Boards"
-        description={`Manage boards and task workflows. ${boards.length} board${boards.length === 1 ? "" : "s"} total.`}
+        title="看板"
+        description={`管理看板和任务工作流。共 ${boards.length} 个看板。`}
         headerActions={
           boards.length > 0 && isAdmin ? (
             <Link
@@ -128,7 +128,7 @@ export default function BoardsPage() {
                 variant: "primary",
               })}
             >
-              Create board
+              创建看板
             </Link>
           ) : null
         }
@@ -145,11 +145,11 @@ export default function BoardsPage() {
             stickyHeader
             onDelete={setDeleteTarget}
             emptyState={{
-              title: "No boards yet",
+              title: "暂无看板",
               description:
-                "Create your first board to start routing tasks and monitoring work across agents.",
+                "创建第一个看板，开始路由任务并监控各智能体的工作。",
               actionHref: "/boards/new",
-              actionLabel: "Create your first board",
+              actionLabel: "创建第一个看板",
             }}
           />
         </div>
@@ -167,11 +167,11 @@ export default function BoardsPage() {
             setDeleteTarget(null);
           }
         }}
-        ariaLabel="Delete board"
+        ariaLabel="删除看板"
         title="Delete board"
         description={
           <>
-            This will remove {deleteTarget?.name}. This action cannot be undone.
+            确定要删除 {deleteTarget?.name} 吗？此操作不可撤销。
           </>
         }
         errorMessage={deleteMutation.error?.message}

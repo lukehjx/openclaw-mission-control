@@ -16,7 +16,7 @@ async function validateLocalToken(token: string): Promise<string | null> {
   try {
     baseUrl = getApiBaseUrl();
   } catch {
-    return "Unable to resolve backend URL.";
+    return "无法解析后端地址。";
   }
 
   let response: Response;
@@ -28,16 +28,16 @@ async function validateLocalToken(token: string): Promise<string | null> {
       },
     });
   } catch {
-    return "Unable to reach backend to validate token.";
+    return "无法连接到后端验证令牌。";
   }
 
   if (response.ok) {
     return null;
   }
   if (response.status === 401 || response.status === 403) {
-    return "Token is invalid.";
+    return "令牌无效。";
   }
-  return `Unable to validate token (HTTP ${response.status}).`;
+  return `无法验证令牌（HTTP ${response.status}）。`;
 }
 
 type LocalAuthLoginProps = {
@@ -55,12 +55,12 @@ export function LocalAuthLogin({ onAuthenticated }: LocalAuthLoginProps) {
     event.preventDefault();
     const cleaned = token.trim();
     if (!cleaned) {
-      setError("Bearer token is required.");
+      setError("Bearer 令牌不能为空。");
       return;
     }
     if (cleaned.length < LOCAL_AUTH_TOKEN_MIN_LENGTH) {
       setError(
-        `Bearer token must be at least ${LOCAL_AUTH_TOKEN_MIN_LENGTH} characters.`,
+        `Bearer 令牌长度至少 ${LOCAL_AUTH_TOKEN_MIN_LENGTH} 个字符。`,
       );
       return;
     }
@@ -89,7 +89,7 @@ export function LocalAuthLogin({ onAuthenticated }: LocalAuthLoginProps) {
         <CardHeader className="space-y-5 border-b border-[color:var(--border)] pb-5">
           <div className="flex items-center justify-between">
             <span className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-muted">
-              Self-host mode
+              自托管模式
             </span>
             <div className="rounded-xl bg-[color:var(--accent-soft)] p-2 text-[color:var(--accent)]">
               <Lock className="h-5 w-5" />
@@ -97,10 +97,10 @@ export function LocalAuthLogin({ onAuthenticated }: LocalAuthLoginProps) {
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold tracking-tight text-strong">
-              Local Authentication
+              本地认证
             </h1>
             <p className="text-sm text-muted">
-              Enter your access token to unlock Mission Control.
+              请输入访问令牌以解锁任务控制台。
             </p>
           </div>
         </CardHeader>
@@ -111,14 +111,14 @@ export function LocalAuthLogin({ onAuthenticated }: LocalAuthLoginProps) {
                 htmlFor="local-auth-token"
                 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted"
               >
-                Access token
+                访问令牌
               </label>
               <Input
                 id="local-auth-token"
                 type="password"
                 value={token}
                 onChange={(event) => setToken(event.target.value)}
-                placeholder="Paste token"
+                placeholder="粘贴令牌"
                 autoFocus
                 disabled={isValidating}
                 className="font-mono"
@@ -130,7 +130,7 @@ export function LocalAuthLogin({ onAuthenticated }: LocalAuthLoginProps) {
               </p>
             ) : (
               <p className="text-xs text-muted">
-                Token must be at least {LOCAL_AUTH_TOKEN_MIN_LENGTH} characters.
+                令牌长度至少 {LOCAL_AUTH_TOKEN_MIN_LENGTH} 个字符。
               </p>
             )}
             <Button
@@ -139,7 +139,7 @@ export function LocalAuthLogin({ onAuthenticated }: LocalAuthLoginProps) {
               size="lg"
               disabled={isValidating}
             >
-              {isValidating ? "Validating..." : "Continue"}
+              {isValidating ? "验证中..." : "继续"}
             </Button>
           </form>
         </CardContent>

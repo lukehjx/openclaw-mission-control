@@ -45,7 +45,7 @@ const findMentionTarget = (
 };
 
 function BoardChatComposerImpl({
-  placeholder = "Message the board lead. Tag agents with @name.",
+  placeholder = "向主智能体发送消息。用 @名称 提及智能体。",
   isSending = false,
   disabled = false,
   mentionSuggestions,
@@ -256,7 +256,7 @@ function BoardChatComposerImpl({
           onClick={() => void send()}
           disabled={isSending || disabled || !value.trim()}
         >
-          {isSending ? "Sending…" : "Send"}
+          {isSending ? "发送中…" : "发送"}
         </Button>
       </div>
     </div>

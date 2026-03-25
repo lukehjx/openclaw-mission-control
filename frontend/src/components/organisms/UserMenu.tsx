@@ -65,7 +65,7 @@ export function UserMenu({
             "data-[state=open]:bg-white",
             className,
           )}
-          aria-label="Open user menu"
+          aria-label="打开用户菜单"
         >
           <span
             className={cn(
@@ -78,7 +78,7 @@ export function UserMenu({
             {avatarUrl ? (
               <Image
                 src={avatarUrl}
-                alt="User avatar"
+                alt="用户头像"
                 width={36}
                 height={36}
                 className="h-9 w-9 object-cover"
@@ -137,7 +137,7 @@ export function UserMenu({
               onClick={() => setOpen(false)}
             >
               <Trello className="h-4 w-4 text-[color:var(--neutral-700,var(--text-quiet))]" />
-              Open boards
+              查看看板
             </Link>
             <Link
               href="/boards/new"
@@ -145,7 +145,7 @@ export function UserMenu({
               onClick={() => setOpen(false)}
             >
               <Plus className="h-4 w-4 opacity-90" />
-              Create board
+              创建看板
             </Link>
           </div>
 
@@ -153,17 +153,17 @@ export function UserMenu({
 
           {(
             [
-              { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-              { href: "/activity", label: "Activity", icon: Activity },
-              { href: "/agents", label: "Agents", icon: Bot },
-              { href: "/gateways", label: "Gateways", icon: Server },
+              { href: "/dashboard", label: "控制台", icon: LayoutDashboard },
+              { href: "/activity", label: "活动记录", icon: Activity },
+              { href: "/agents", label: "智能体", icon: Bot },
+              { href: "/gateways", label: "网关", icon: Server },
               {
                 href: "/skills/marketplace",
-                label: "Skills marketplace",
+                label: "技能市场",
                 icon: Store,
               },
-              { href: "/skills/packs", label: "Skill packs", icon: Boxes },
-              { href: "/settings", label: "Settings", icon: Settings },
+              { href: "/skills/packs", label: "技能包", icon: Boxes },
+              { href: "/settings", label: "设置", icon: Settings },
             ] as const
           ).map((item) => (
             <Link
@@ -190,7 +190,7 @@ export function UserMenu({
               }}
             >
               <LogOut className="h-4 w-4 text-[color:var(--neutral-700,var(--text-quiet))]" />
-              Sign out
+              退出登录
             </button>
           ) : (
             <SignOutButton>
@@ -200,7 +200,7 @@ export function UserMenu({
                 onClick={() => setOpen(false)}
               >
                 <LogOut className="h-4 w-4 text-[color:var(--neutral-700,var(--text-quiet))]" />
-                Sign out
+                退出登录
               </button>
             </SignOutButton>
           )}
